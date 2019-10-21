@@ -1,11 +1,16 @@
 import 'package:fides_calendar/models/celebration.dart';
 import 'package:fides_calendar/screens/organizes.dart';
+import 'package:fides_calendar/util/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'dart:convert' show jsonDecode;
 import 'package:http/http.dart' as http;
 
 class InfoPage extends StatefulWidget {
+  final celebrationId;
+
+  const InfoPage({Key key, @required this.celebrationId}) : super(key: key);
+
   @override
   _InfoPageState createState() => _InfoPageState();
 }
@@ -20,10 +25,9 @@ class _InfoPageState extends State<InfoPage> {
     });
     try {
       final response = await http.get(
-          "https://immense-anchorage-57010.herokuapp.com/api/celebration/5da6cc9ee1a7600004cab79f",
+          "https://immense-anchorage-57010.herokuapp.com/api/celebration/${this.widget.celebrationId}",
           headers: {'Accept': 'application/json'});
       if (response.statusCode == 200) {
-        print(jsonDecode(response.body));
         _celebration = Celebration.fromJson(jsonDecode(response.body));
 
         setState(() {
@@ -48,7 +52,7 @@ class _InfoPageState extends State<InfoPage> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color.fromRGBO(174, 0, 17, 70),
-        child: Icon(Icons.add),
+        child: Icon(Icons.create),
         onPressed: () {
           Navigator.push(
               context,
@@ -67,20 +71,31 @@ class _InfoPageState extends State<InfoPage> {
             Row(
               children: <Widget>[
                 Container(
-                   margin: EdgeInsets.only(
-                                      top: 20, left: 20, right: 20),
-                                  width: 370,
-                                  height: 400,
-                                  color: Color.fromRGBO(229, 231, 234, 30),
-                                  child: Text(
-                                    _celebration == null ? "Loading..." : _celebration.celebrated.firstName,
-                                    style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 35,
-                                          color: Color.fromRGBO(174, 0, 17, 70)),
-                                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20.0),
+                        topRight: Radius.circular(20.0),
+                        bottomLeft: Radius.circular(20.0),
+                        bottomRight: Radius.circular(20.0)),
+                    color: Color.fromRGBO(229, 231, 234, 30),
+                  ),
+                  margin: EdgeInsets.only(top: 20, left: 20, right: 20),
+                  width: 320,
+                  height: 510,
+                  child: Text(
+                    _celebration == null
+                        ? "Loading..."
+                        : "${_celebration.celebrated.firstName} ${_celebration.celebrated.lastName}\n" +
+                            "${DateTime.parse(_celebration.date).day} " +
+                            "${DateFormat.numberToString(DateTime.parse(_celebration.date).month)}\n" +
+                            "${_celebration.celebrationType}",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 25,
+                        color: Color.fromRGBO(174, 0, 17, 70)),
+                  ),
                 )
-                    
               ],
             ),
           ],

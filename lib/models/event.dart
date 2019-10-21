@@ -30,7 +30,7 @@ class Event {
         celebration = json['celebration'] == null ? null : Celebration.fromJson(json['celebration']),
         menu = json['menu'] == null ? null : Menu.fromJson(json['menu']),
         poll = json['poll'] == null ? null : Poll.fromJson(json['poll']),
-        reviews = json['reviews'] == null ? null:json['reviews'].map((review)=> Review.fromJson(review)).toList();
+        reviews = json['reviews'] == null ? null : List<Review>.from(json['reviews'].map((review)=> Review.fromJson(review)).toList());
 
   Map toJson() {
     return {

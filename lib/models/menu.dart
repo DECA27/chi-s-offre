@@ -18,7 +18,7 @@ class Menu {
       : shopName = json['shopName'],
         dishes = json['dishes'] == null
             ? null
-            : json['dishes'].map((dish) => Dish.fromJson(dish)).toList();
+            : List<Dish>.from(json['dishes'].map((dish) => Dish.fromJson(dish)).toList());
 
   Map toJson() {
     return {

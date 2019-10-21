@@ -26,6 +26,7 @@ dependencies:
   page_transition: ^1.1.5
   flutter_fluid_slider: ^1.0.1
   table_calendar: ^2.0.2
+  timeline_list: ^0.0.3
  
 
   # The following adds the Cupertino Icons font to your application.

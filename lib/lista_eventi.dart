@@ -4,6 +4,8 @@ import 'package:fides_calendar/screens/info_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:timeline_list/timeline.dart';
+import 'package:timeline_list/timeline_model.dart';
 
 import 'dart:convert' show jsonDecode;
 import 'package:http/http.dart' as http;
@@ -51,84 +53,101 @@ class _ListaEventiState extends State<ListaEventi> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('EVENTI'),
-        backgroundColor: Color.fromRGBO(174, 0, 17, 70),
-      ),
-      drawer: Drawer(
-        child: ListView(
-          children: <Widget>[
-            DrawerHeader(
-              child: Container(
-                color: Color.fromRGBO(174, 0, 17, 70),
-                padding: EdgeInsets.all(5),
-                child: Image.asset(
-                  "assets/images/Untitled-1.png",
+        appBar: AppBar(
+          title: Text('EVENTI'),
+          backgroundColor: Color.fromRGBO(174, 0, 17, 70),
+        ),
+        drawer: Drawer(
+          child: ListView(
+            children: <Widget>[
+              DrawerHeader(
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  color: Color.fromRGBO(174, 0, 17, 70),
+                  padding: EdgeInsets.all(5),
+                  child: Image.asset(
+                    "assets/images/Untitled-1.png",
+                  ),
                 ),
               ),
-            ),
-            ListTile(
-              title: Text('USER'),
-            ),
-            ListTile(
-              title: Text('LOGOUT'),
-            )
-          ],
+              ListTile(
+                title: Text('USER'),
+              ),
+              ListTile(
+                title: Text('LOGOUT'),
+              )
+            ],
+          ),
         ),
-      ),
-      body: SingleChildScrollView(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: 
-            <Widget>[
-          Container(
-              color: Colors.white70,
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              child: Container(
-                width: 100,
-                height: 100,
-                child: ListView.builder(
-                    itemCount: _celebrations.length,
-                    itemBuilder: (context, i) {
-                      return Row(
-                        children: <Widget>[
-                          Expanded(
-                            flex: 1,
-                            child: GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    PageTransition(
-                                        child: InfoPage(),
-                                        type: PageTransitionType.rightToLeft));
-                              },
-                              child: Container(
-                                  margin: EdgeInsets.only(
-                                      top: 20, left: 20, right: 20),
-                                  width: MediaQuery.of(context).size.width,
-                                  height: 100,
-                                  child: Align(
-                                    alignment: Alignment.bottomCenter,
-                                    child: Text(
-                                      _celebrations[i].celebrated.firstName,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 25,
-                                          color: Colors.white),
-                                    ),
+        body: Timeline.builder(
+          itemBuilder: (context, i) {
+            return TimelineModel(
+                Container(
+                    color: Color.fromRGBO(174, 0, 17, 70),
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
+                    child: Container(
+                      width: 100,
+                      height: 100,
+                      child: ListView.builder(
+                          itemCount: _celebrations.length,
+                          itemBuilder: (context, i) {
+                            return Row(
+                              children: <Widget>[
+                                Expanded(
+                                  flex: 1,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          PageTransition(
+                                              child: InfoPage(
+                                                celebrationId:
+                                                    _celebrations[i].id,
+                                              ),
+                                              type: PageTransitionType.fade));
+                                    },
+                                    child: Container(
+                                        margin: EdgeInsets.only(
+                                            top: 20, left: 20, right: 0),
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        height: 100,
+                                        child: Align(
+                                          alignment: Alignment.bottomCenter,
+                                          child: Text(
+                                            _celebrations[i]
+                                                .celebrated
+                                                .firstName,
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 25,
+                                                color: Colors.black),
+                                          ),
+                                        ),
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(20.0),
+                                              bottomLeft: Radius.circular(20.0),
+                                            ),
+                                            color: Colors.white)),
                                   ),
-                                  decoration: BoxDecoration(
-                                    color: Color.fromRGBO(229, 231, 234, 30),
-                                  )),
-                            ),
-                          )
-                        ],
-                      );
-                    }),
-              )),
-        ]),
-      ),
-    );
+                                )
+                              ],
+                            );
+                          }),
+                    )),
+                icon: Icon(
+                  Icons.cake,
+                ),
+                iconBackground: Colors.white);
+          },
+          position: TimelinePosition.Left,
+          itemCount: _celebrations.length,
+          physics: BouncingScrollPhysics(),
+          lineColor: Color.fromRGBO(174, 0, 17, 70),
+        ));
   }
 }
 
