@@ -11,7 +11,7 @@ import 'package:json_annotation/json_annotation.dart';
 @JsonSerializable(nullable: true)
 class Event {
   Float average;
-  String _id;
+  String id;
   String status;
   String celebrationDate;
   Celebration celebration;
@@ -19,11 +19,11 @@ class Event {
   Poll poll;
   List<Review> reviews;
 
-  Event(this._id, this.average, this.celebrationDate, this.status,
+  Event(this.id, this.average, this.celebrationDate, this.status,
       this.celebration, this.menu, this.poll, this.reviews);
 
   Event.fromJson(Map json)
-      : _id = json['email'],
+      : id = json['id'],
         average = json['average'],
         celebrationDate = json['celebrationDate'],
         status = json['status'],
@@ -34,7 +34,7 @@ class Event {
 
   Map toJson() {
     return {
-      '_id': _id,
+      'id': id,
       'celebrationDate': celebrationDate,
       'status': status,
       'average': average,

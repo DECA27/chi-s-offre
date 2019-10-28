@@ -17,7 +17,7 @@ class Celebration {
       this.linkedEvents, this.activeEvent);
 
   Celebration.fromJson(Map json)
-      : id = json['_id'],
+      : id = json['id'],
         celebrated = json['celebrated'] == null ? null : User.fromJson(json['celebrated']),
         celebrationType = json['celebrationType'],
         date = json['date'],
@@ -26,7 +26,7 @@ class Celebration {
         
   Map toJson() {
     return {
-      '_id': id,
+      'id': id,
       'celebrationType': celebrationType,
       'date': date,
       'celebrated': celebrated.toJson(),

@@ -2,40 +2,40 @@ class DateFormat {
   static String numberToString(int month) {
     switch (month) {
       case 1:
-        return 'Gennaio';
+        return 'Gen';
         break;
       case 2:
-        return 'Febbraio';
+        return 'Feb';
         break;
       case 3:
-        return 'Marzo';
+        return 'Mar';
         break;
       case 4:
-        return 'Aprile';
+        return 'Apr';
         break;
       case 5:
-        return 'Maggio';
+        return 'Mag';
         break;
       case 6:
-        return 'Giugno';
+        return 'Giu';
         break;
       case 7:
-        return 'Luglio';
+        return 'Lug';
         break;
       case 8:
-        return 'Agosto';
+        return 'Ago';
         break;
       case 9:
-        return 'Settembre';
+        return 'Set';
         break;
       case 10:
-        return 'Ottobre';
+        return 'Ott';
         break;
       case 11:
-        return 'Novembre';
+        return 'Nov';
         break;
       case 12:
-        return 'Dicembre';
+        return 'Dic';
 
       default:
         return 'Non un mese valido';

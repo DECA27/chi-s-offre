@@ -1,11 +1,16 @@
+import 'package:fides_calendar/main.dart' as prefix0;
 import 'package:fides_calendar/models/celebration.dart';
 import 'package:fides_calendar/models/event.dart';
+import 'package:fides_calendar/screens/camera_screen.dart';
 import 'package:fides_calendar/screens/info_page.dart';
+import 'package:fides_calendar/screens/info_user.dart';
+import 'package:fides_calendar/util/date_format.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:timeline_list/timeline.dart';
 import 'package:timeline_list/timeline_model.dart';
+import 'package:camera/camera.dart';
 
 import 'dart:convert' show jsonDecode;
 import 'package:http/http.dart' as http;
@@ -30,6 +35,10 @@ class _ListaEventiState extends State<ListaEventi> {
           headers: {'Accept': 'application/json'});
       if (response.statusCode == 200) {
         Iterable list = jsonDecode(response.body);
+        for(var i = 0; i< list.length; i++){
+          print(list.elementAt(i));
+          print(Celebration.fromJson(list.elementAt(i)).id);
+        }
 
         _celebrations =
             list.map((model) => Celebration.fromJson(model)).toList();
@@ -53,101 +62,95 @@ class _ListaEventiState extends State<ListaEventi> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('EVENTI'),
-          backgroundColor: Color.fromRGBO(174, 0, 17, 70),
-        ),
-        drawer: Drawer(
-          child: ListView(
-            children: <Widget>[
-              DrawerHeader(
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  color: Color.fromRGBO(174, 0, 17, 70),
-                  padding: EdgeInsets.all(5),
-                  child: Image.asset(
-                    "assets/images/Untitled-1.png",
-                  ),
-                ),
-              ),
-              ListTile(
-                title: Text('USER'),
-              ),
-              ListTile(
-                title: Text('LOGOUT'),
-              )
-            ],
-          ),
-        ),
-        body: Timeline.builder(
+      appBar: AppBar(
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.account_circle,size: 27),
+            onPressed: () {
+              Navigator.push(context, PageTransition(
+child: InfoUser(),type: PageTransitionType.fade
+              ));
+            },
+          )
+        ],
+        automaticallyImplyLeading: false,
+        title: Center(child: Text('CALENDAR')),
+        elevation: 0,
+        backgroundColor: Color.fromRGBO(174, 0, 30, 1),
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+            color: Color.fromRGBO(174, 0, 17,1),
+            image: DecorationImage(
+                fit: BoxFit.cover,
+                image: NetworkImage(
+                    "https://static.iphoneitalia.com/wp-content/uploads/2014/03/iPhone-3G3GS-22.jpg"))),
+        child: Timeline.builder(
           itemBuilder: (context, i) {
             return TimelineModel(
                 Container(
-                    color: Color.fromRGBO(174, 0, 17, 70),
+                    color: Colors.transparent,
                     width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height,
+                    height: 180,
                     child: Container(
                       width: 100,
                       height: 100,
-                      child: ListView.builder(
-                          itemCount: _celebrations.length,
-                          itemBuilder: (context, i) {
-                            return Row(
-                              children: <Widget>[
-                                Expanded(
-                                  flex: 1,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          PageTransition(
-                                              child: InfoPage(
-                                                celebrationId:
-                                                    _celebrations[i].id,
-                                              ),
-                                              type: PageTransitionType.fade));
-                                    },
-                                    child: Container(
-                                        margin: EdgeInsets.only(
-                                            top: 20, left: 20, right: 0),
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        height: 100,
-                                        child: Align(
-                                          alignment: Alignment.bottomCenter,
-                                          child: Text(
-                                            _celebrations[i]
-                                                .celebrated
-                                                .firstName,
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 25,
-                                                color: Colors.black),
-                                          ),
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                            flex: 1,
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    PageTransition(
+                                        child: InfoPage(
+                                          celebrationId: _celebrations[i].id,
+                                          cameras: <CameraDescription>[],
                                         ),
-                                        decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(20.0),
-                                              bottomLeft: Radius.circular(20.0),
-                                            ),
-                                            color: Colors.white)),
+                                        type: PageTransitionType.fade));
+                              },
+                              child: Container(
+                                  margin: EdgeInsets.only(
+                                      top: 20, left: 20, right: 0),
+                                  width: MediaQuery.of(context).size.width,
+                                  height: 100,
+                                  child: Align(
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      "${_celebrations[i].celebrationType[0].toUpperCase()}${_celebrations[i].celebrationType.substring(1)} di:\n" +
+                                          "${_celebrations[i].celebrated.firstName} ${_celebrations[i].celebrated.lastName}",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 25,
+                                          color: Colors.black),
+                                    ),
                                   ),
-                                )
-                              ],
-                            );
-                          }),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.only(
+                                        bottomRight: Radius.circular(20.0),
+                                        topRight: Radius.circular(20.0),
+                                        topLeft: Radius.circular(20.0),
+                                        bottomLeft: Radius.circular(20.0),
+                                      ),
+                                      color: Colors.white)),
+                            ),
+                          )
+                        ],
+                      ),
                     )),
-                icon: Icon(
-                  Icons.cake,
-                ),
-                iconBackground: Colors.white);
+                iconBackground: Colors.transparent,
+                dateString:
+                    "${DateTime.parse(_celebrations[i].date).day.toString()}\n${DateFormat.numberToString(DateTime.parse(_celebrations[i].date).month)}");
           },
           position: TimelinePosition.Left,
           itemCount: _celebrations.length,
           physics: BouncingScrollPhysics(),
-          lineColor: Color.fromRGBO(174, 0, 17, 70),
-        ));
+          lineColor: Colors.white,
+        ),
+      ),
+    );
   }
 }
 

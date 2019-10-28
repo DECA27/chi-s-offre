@@ -7,24 +7,34 @@ class User {
   String password;
   String firstName;
   String lastName;
-  String _id;
+  String id;
   List<Celebration> celebrations;
+  String profilePicKey;
 
-  User(this.email, this.password, this.firstName, this.lastName, this._id,
-      this.celebrations);
+  String profilePicUrl;
+
+  User(this.email, this.password, this.firstName, this.lastName, this.id,
+      this.celebrations,this.profilePicKey,this.profilePicUrl);
 
   User.fromJson(Map json)
+  
       : email = json['email'],
         password = json['password'],
         firstName = json['firstName'],
         lastName = json['lastName'],
-        _id = json['_id'],
-        celebrations = json['celebrations'] == null ? null : json['celebrations']
-            .map((celebrations) => Celebration.fromJson(celebrations))
-            .toList();
+        id = json['id'],
+        celebrations = json['celebrations'] == null
+            ? null
+            : json['celebrations']
+                .map((celebrations) => Celebration.fromJson(celebrations))
+                .toList(),
+                profilePicKey= json['profilePicKey'],
+                profilePicUrl= json['profilePicUrl'];
 
   Map toJson() {
     return {
+      'profilePicUrl':profilePicUrl,
+      'profilePicKey':profilePicKey,
       'email': email,
       'password': password,
       'firstName': firstName,
