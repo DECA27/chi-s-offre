@@ -21,6 +21,7 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body: ListView(
         children: <Widget>[
@@ -48,6 +49,7 @@ class _LoginState extends State<Login> {
                                 margin: EdgeInsets.only(
                                     top: 60, left: 20, right: 20),
                                 child: TextFormField(
+                                   cursorColor: Colors.black,
                                   validator: (value) {
                                     if (value.isEmpty) {
                                       return 'CAMPO OBBLIGATORIO';
@@ -56,6 +58,7 @@ class _LoginState extends State<Login> {
                                   },
                                   obscureText: false,
                                   decoration: InputDecoration(
+                                    focusedBorder: OutlineInputBorder( borderRadius: BorderRadius.circular(32.0),borderSide: BorderSide(color: Colors.black)),
                                     contentPadding: EdgeInsets.fromLTRB(
                                         20.0, 15.0, 20.0, 15.0),
                                     hintText: "Email",
@@ -72,6 +75,7 @@ class _LoginState extends State<Login> {
                                 margin: EdgeInsets.only(
                                     top: 40, left: 20, right: 20),
                                 child: TextFormField(
+                                   cursorColor: Colors.black,
                                     validator: (value) {
                                       if (value.isEmpty) {
                                         return 'CAMPO OBBLIGATORIO';
@@ -80,6 +84,7 @@ class _LoginState extends State<Login> {
                                     },
                                     obscureText: true,
                                     decoration: InputDecoration(
+                                      focusedBorder: OutlineInputBorder( borderRadius: BorderRadius.circular(32.0),borderSide: BorderSide(color: Colors.black)),
                                         contentPadding: EdgeInsets.fromLTRB(
                                             20.0, 15.0, 20.0, 15.0),
                                         hintText: "Password",
@@ -112,7 +117,7 @@ class _LoginState extends State<Login> {
                                                           context,
                                                           PageTransition(
                                                               child:
-                                                                  SecondPage(),
+                                                                  ListaEventi(),
                                                               type:
                                                                   PageTransitionType
                                                                       .fade))

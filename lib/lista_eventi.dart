@@ -1,5 +1,7 @@
 import 'dart:io';
 
+//import 'package:camera/camera.dart';
+import 'package:camera/camera.dart';
 import 'package:fides_calendar/authorization/authorization.dart';
 import 'package:fides_calendar/login.dart';
 import 'package:fides_calendar/main.dart' as prefix0;
@@ -118,14 +120,14 @@ class _ListaEventiState extends State<ListaEventi> {
                             flex: 1,
                             child: GestureDetector(
                               onTap: () {
-                                // Navigator.push(
-                                //     context,
-                                //     PageTransition(
-                                //         child: InfoPage(
-                                //           celebrationId: _celebrations[i].id,
-                                //           cameras: <CameraDescription>[],
-                                //         ),
-                                //         type: PageTransitionType.fade));
+                                Navigator.push(
+                                     context,
+                                     PageTransition(
+                                         child: InfoPage(
+                                           celebrationId: _celebrations[i].id,
+                                           camera: <CameraDescription>[],
+                                         ),
+                                         type: PageTransitionType.fade));
                               },
                               child: Container(
                                   margin: EdgeInsets.only(

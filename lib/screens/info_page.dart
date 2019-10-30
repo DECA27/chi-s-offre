@@ -1,5 +1,8 @@
 // import 'package:camera/camera.dart';
+import 'package:camera/camera.dart';
+import 'package:fides_calendar/authorization/authorization.dart';
 import 'package:fides_calendar/models/celebration.dart';
+import 'package:fides_calendar/screens/camera_screen.dart';
 // import 'package:fides_calendar/screens/camera_screen.dart';
 import 'package:fides_calendar/screens/organizes.dart';
 import 'package:fides_calendar/util/date_format.dart';
@@ -14,7 +17,7 @@ class InfoPage extends StatefulWidget {
   
   final celebrationId;
   // final List<CameraDescription> cameras;
-  const InfoPage({Key key, @required this.celebrationId}) : super(key: key);
+  const InfoPage({Key key, @required this.celebrationId, List<CameraDescription> cameras, List<CameraDescription> camera}) : super(key: key);
 
   @override
   _InfoPageState createState() => _InfoPageState();
@@ -55,8 +58,11 @@ class _InfoPageState extends State<InfoPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton: SpeedDial(
+    return Scaffold(       
+      floatingActionButton: 
+      _celebration.celebrated.id == Authorization.getLoggedUser().id ? 
+      SpeedDial(
+        
         marginRight: 18,
         marginBottom: 20,
         animatedIcon: AnimatedIcons.menu_close,
@@ -81,10 +87,10 @@ class _InfoPageState extends State<InfoPage> {
               label: 'Aggiungi qui le tue foto',
               labelStyle: TextStyle(fontSize: 15.0),
               onTap: () {
-                // Navigator.push(
-                //     context,
-                //     PageTransition(
-                //         child: CameraScreen(widget.cameras), type: PageTransitionType.fade));
+                 Navigator.push(
+                    context,
+                   PageTransition(
+                       child: CameraScreen(), type: PageTransitionType.fade));
               }),
           SpeedDialChild(
               child: Icon(Icons.create, color: Colors.black),
@@ -99,7 +105,7 @@ class _InfoPageState extends State<InfoPage> {
                         child: Organizes(), type: PageTransitionType.fade));
               }),
         ],
-      ),
+      ) : null,
       body: SingleChildScrollView(
 
         
@@ -160,6 +166,6 @@ class _InfoPageState extends State<InfoPage> {
           ),
         ),
       ),
-    );
+       );
   }
 }

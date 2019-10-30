@@ -104,19 +104,26 @@ class _RegistrazioneState extends State<Registrazione> {
                     margin:
                         EdgeInsets.only(top: 30, left: _offset, right: _offset),
                     child: TextFormField(
+                       cursorColor: Colors.black,
                       validator: (value) {
                         if (value.isEmpty) {
                           return 'CAMPO OBBLIGATORIO';
                         }
                         return null;
                       },
+                      
                       obscureText: false,
                       decoration: InputDecoration(
+                         
+                        focusedBorder: OutlineInputBorder( borderRadius: BorderRadius.circular(32.0),borderSide: BorderSide(color: Colors.black)),
                         contentPadding:
                             EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                         hintText: "Nome",
+
                         border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.transparent),
                             borderRadius: BorderRadius.circular(32.0)),
+                           
                       ),
                       onSaved: (val) => setState(() {
                         userData.firstName = val;
@@ -127,6 +134,7 @@ class _RegistrazioneState extends State<Registrazione> {
                     margin: EdgeInsets.only(
                         top: _offset, left: _offset, right: _offset),
                     child: TextFormField(
+                      cursorColor: Colors.black,
                         validator: (value) {
                           if (value.isEmpty) {
                             return 'CAMPO OBBLIGATORIO';
@@ -135,6 +143,8 @@ class _RegistrazioneState extends State<Registrazione> {
                         },
                         obscureText: false,
                         decoration: InputDecoration(
+                          
+                           focusedBorder: OutlineInputBorder( borderRadius: BorderRadius.circular(32.0),borderSide: BorderSide(color: Colors.black)),
                             contentPadding:
                                 EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                             hintText: "Cognome",
@@ -192,6 +202,7 @@ class _RegistrazioneState extends State<Registrazione> {
                     margin: EdgeInsets.only(
                         top: _offset, left: _offset, right: _offset),
                     child: TextFormField(
+                       cursorColor: Colors.black,
                         validator: (value) {
                           if (value.isEmpty) {
                             return 'CAMPO OBBLIGATORIO';
@@ -204,6 +215,7 @@ class _RegistrazioneState extends State<Registrazione> {
                         },
                         obscureText: false,
                         decoration: InputDecoration(
+                           focusedBorder: OutlineInputBorder( borderRadius: BorderRadius.circular(32.0),borderSide: BorderSide(color: Colors.black)),
                             contentPadding:
                                 EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                             hintText: "Email",
@@ -217,7 +229,7 @@ class _RegistrazioneState extends State<Registrazione> {
                     margin: EdgeInsets.only(
                         top: _offset, left: _offset, right: _offset),
                     child: TextFormField(
-                        
+                         cursorColor: Colors.black,
                         validator: (value) {
                           if (value.isEmpty) {
                             return 'CAMPO OBBLIGATORIO';
@@ -231,6 +243,7 @@ class _RegistrazioneState extends State<Registrazione> {
                         },
                         obscureText: true,
                         decoration: InputDecoration(
+                           focusedBorder: OutlineInputBorder( borderRadius: BorderRadius.circular(32.0),borderSide: BorderSide(color: Colors.black)),
                             contentPadding:
                                 EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                             hintText: "Password",
