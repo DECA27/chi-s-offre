@@ -112,16 +112,17 @@ class CameraScreenState extends State<CameraScreen> {
               RaisedButton(
                   color: Color.fromRGBO(174, 0, 17, 1),
                   onPressed: () async {
-                    String base64Image = base64Encode(_image.readAsBytesSync());
-                    http.put(
-                        // "https://immense-anchorage-57010.herokuapp.com/api/user/" +
-                        //   Authorization.getLoggedUser().id +
-                        //  "/image",
-                        "https://immense-anchorage-57010.herokuapp.com/test",
-                        body: {"updatePic": base64Image}).then((response) => {
-                          if (response.statusCode == 200)
-                            {Authorization.saveToken(response.body)}
-                        });
+                    var request = new http.MultipartRequest(
+                        "PUT",
+                        Uri.parse(
+                            "https://immense-anchorage-57010.herokuapp.com/api/user/${Authorization.getLoggedUser().id}/image"));
+                    request.files.add(await http.MultipartFile.fromPath('updatePic', _image.path));
+                    request.send().then((responseStream) async {
+                      if (responseStream.statusCode == 200){
+                        var response = await http.Response.fromStream(responseStream);
+                        Authorization.token = response.body;
+                      };
+                    });
                   },
                   child: Text('AGGIUNGI QUESTA FOTO')),
               Row(
