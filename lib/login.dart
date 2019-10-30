@@ -112,7 +112,7 @@ class _LoginState extends State<Login> {
                                                           context,
                                                           PageTransition(
                                                               child:
-                                                                  SecondPage(),
+                                                                  ListaEventi(),
                                                               type:
                                                                   PageTransitionType
                                                                       .fade))
