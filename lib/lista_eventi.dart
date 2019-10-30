@@ -1,6 +1,11 @@
+import 'dart:io';
+
+import 'package:fides_calendar/authorization/authorization.dart';
+import 'package:fides_calendar/login.dart';
 import 'package:fides_calendar/main.dart' as prefix0;
 import 'package:fides_calendar/models/celebration.dart';
 import 'package:fides_calendar/models/event.dart';
+import 'package:fides_calendar/registrazione.dart';
 import 'package:fides_calendar/screens/camera_screen.dart';
 import 'package:fides_calendar/screens/info_page.dart';
 import 'package:fides_calendar/screens/info_user.dart';
@@ -10,7 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:timeline_list/timeline.dart';
 import 'package:timeline_list/timeline_model.dart';
-import 'package:camera/camera.dart';
+// import 'package:camera/camera.dart';
 
 import 'dart:convert' show jsonDecode;
 import 'package:http/http.dart' as http;
@@ -31,11 +36,14 @@ class _ListaEventiState extends State<ListaEventi> {
     });
     try {
       final response = await http.get(
-          "https://immense-anchorage-57010.herokuapp.com/api/celebrations",
-          headers: {'Accept': 'application/json'});
+          "https://immense-anchorage-57010.herokuapp.com/api/celebrations/coming/20",
+          headers: {
+            'Accept': 'application/json',
+            HttpHeaders.authorizationHeader: Authorization.token
+          });
       if (response.statusCode == 200) {
         Iterable list = jsonDecode(response.body);
-        for(var i = 0; i< list.length; i++){
+        for (var i = 0; i < list.length; i++) {
           print(list.elementAt(i));
           print(Celebration.fromJson(list.elementAt(i)).id);
         }
@@ -45,6 +53,9 @@ class _ListaEventiState extends State<ListaEventi> {
         setState(() {
           _isLoading = false;
         });
+      } else if (response.statusCode == 401) {
+        Navigator.push(context,
+            PageTransition(child: Login(), type: PageTransitionType.fade));
       } else {
         throw Exception('Failed to load events');
       }
@@ -65,13 +76,19 @@ class _ListaEventiState extends State<ListaEventi> {
       appBar: AppBar(
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.account_circle,size: 27),
+            icon: Image.network(
+              Authorization.getLoggedUser().profilePicUrl,
+            ),
             onPressed: () {
-              Navigator.push(context, PageTransition(
-child: InfoUser(),type: PageTransitionType.fade
-              ));
+              Navigator.push(
+                  context,
+                  PageTransition(
+                      child: InfoUser(
+                        userId: Authorization.getLoggedUser().id,
+                      ),
+                      type: PageTransitionType.fade));
             },
-          )
+          ),
         ],
         automaticallyImplyLeading: false,
         title: Center(child: Text('CALENDAR')),
@@ -80,7 +97,7 @@ child: InfoUser(),type: PageTransitionType.fade
       ),
       body: Container(
         decoration: BoxDecoration(
-            color: Color.fromRGBO(174, 0, 17,1),
+            color: Color.fromRGBO(174, 0, 17, 1),
             image: DecorationImage(
                 fit: BoxFit.cover,
                 image: NetworkImage(
@@ -101,14 +118,14 @@ child: InfoUser(),type: PageTransitionType.fade
                             flex: 1,
                             child: GestureDetector(
                               onTap: () {
-                                Navigator.push(
-                                    context,
-                                    PageTransition(
-                                        child: InfoPage(
-                                          celebrationId: _celebrations[i].id,
-                                          cameras: <CameraDescription>[],
-                                        ),
-                                        type: PageTransitionType.fade));
+                                // Navigator.push(
+                                //     context,
+                                //     PageTransition(
+                                //         child: InfoPage(
+                                //           celebrationId: _celebrations[i].id,
+                                //           cameras: <CameraDescription>[],
+                                //         ),
+                                //         type: PageTransitionType.fade));
                               },
                               child: Container(
                                   margin: EdgeInsets.only(

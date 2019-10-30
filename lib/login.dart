@@ -1,5 +1,12 @@
+import 'package:fides_calendar/authorization/authorization.dart';
+import 'package:fides_calendar/lista_eventi.dart';
+import 'package:fides_calendar/registrazione.dart';
+import 'package:fides_calendar/screens/camera_screen.dart';
+import 'package:fides_calendar/screens/second_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:path/path.dart' as prefix0;
 
 class Login extends StatefulWidget {
   @override
@@ -7,75 +14,140 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  final _formKey = GlobalKey<FormState>();
+  String _email;
+  String _password;
   get style => null;
 
   @override
   Widget build(BuildContext context) {
-    final emailField = TextField(
-      obscureText: false,
-      style: style,
-      decoration: InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-          hintText: "Email",
-          border:
-              OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
-    );
-    final passwordField = TextField(
-        obscureText: true,
-        style: style,
-        decoration: InputDecoration(
-            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-            hintText: "Password",
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))));
-
-    final loginButon = Material(
-      elevation: 5.0,
-      borderRadius: BorderRadius.circular(30.0),
-      color: Color.fromRGBO(174, 0, 17, 70),
-      child: MaterialButton(
-        minWidth: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        onPressed: () {},
-        child: Text(
-          "Login",
-          textAlign: TextAlign.center,
-        ),
-      ),
-    );
-
     return Scaffold(
-      body: Center(
-        child: Container(
-          color: Colors.white,
-          child: Padding(
-            padding: const EdgeInsets.all(36.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(
-                  width: 200,
-                  child: Image.asset(
-                    "assets/images/Asset 2.png",
-                    fit: BoxFit.contain,
-                  ),
-                ),
-                SizedBox(height: 30.0),
-                emailField,
-                SizedBox(height: 30.0),
-                passwordField,
-                SizedBox(
-                  height: 30.0,
-                ),
-                loginButon,
-                SizedBox(
-                  height: 30.0,
-                ),
-              ],
-            ),
-          ),
-        ),
+      body: ListView(
+        children: <Widget>[
+          Container(
+              width: double.infinity,
+              height: MediaQuery.of(context).size.height,
+              color: Colors.white,
+              child: Padding(
+                  padding: const EdgeInsets.all(46.0),
+                  child: Form(
+                      key: _formKey,
+                      child: Column(children: <Widget>[
+                        Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              SizedBox(
+                                width: 200,
+                                child: Image.asset(
+                                  "assets/images/Asset 2.png",
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(
+                                    top: 60, left: 20, right: 20),
+                                child: TextFormField(
+                                  validator: (value) {
+                                    if (value.isEmpty) {
+                                      return 'CAMPO OBBLIGATORIO';
+                                    }
+                                    return null;
+                                  },
+                                  obscureText: false,
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.fromLTRB(
+                                        20.0, 15.0, 20.0, 15.0),
+                                    hintText: "Email",
+                                    border: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(32.0)),
+                                  ),
+                                  onSaved: (val) => setState(() {
+                                    _email = val;
+                                  }),
+                                ),
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(
+                                    top: 40, left: 20, right: 20),
+                                child: TextFormField(
+                                    validator: (value) {
+                                      if (value.isEmpty) {
+                                        return 'CAMPO OBBLIGATORIO';
+                                      }
+                                      return null;
+                                    },
+                                    obscureText: true,
+                                    decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.fromLTRB(
+                                            20.0, 15.0, 20.0, 15.0),
+                                        hintText: "Password",
+                                        border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(32.0))),
+                                    onSaved: (val) => setState(() {
+                                          _password = val;
+                                        })),
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(
+                                    top: 40, left: 20, right: 20),
+                                child: Material(
+                                  elevation: 5.0,
+                                  borderRadius: BorderRadius.circular(30.0),
+                                  color: Color.fromRGBO(174, 0, 17, 1),
+                                  child: MaterialButton(
+                                    minWidth: MediaQuery.of(context).size.width,
+                                    padding: EdgeInsets.fromLTRB(
+                                        20.0, 15.0, 20.0, 15.0),
+                                    onPressed: () {
+                                      _formKey.currentState.save();
+                                      if (_formKey.currentState.validate()) {
+                                        Authorization.login(_email, _password)
+                                            .then((validated) => {
+                                                  if (validated)
+                                                    {
+                                                      Navigator.push(
+                                                          context,
+                                                          PageTransition(
+                                                              child:
+                                                                  SecondPage(),
+                                                              type:
+                                                                  PageTransitionType
+                                                                      .fade))
+                                                    }
+                                                  else
+                                                    {
+                                                      print(
+                                                          'Incorrect email or password')
+                                                    }
+                                                });
+                                      }
+                                    },
+                                    child: Text(
+                                      "LOGIN",
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                  margin: EdgeInsets.only(top: 20, bottom: 20),
+                                  child: Text('Non sei registrato?')),
+                              RaisedButton(
+                                  color: Color.fromRGBO(174, 0, 17, 1),
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        PageTransition(
+                                            child: Registrazione(),
+                                            type: PageTransitionType.fade));
+                                  },
+                                  child: Text('REGISTRATI'))
+                            ])
+                      ]))))
+        ],
       ),
     );
   }

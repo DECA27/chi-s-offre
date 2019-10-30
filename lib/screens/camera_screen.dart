@@ -1,15 +1,19 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
-
+import 'package:fides_calendar/authorization/authorization.dart';
+import 'package:http/http.dart' as http;
 import 'package:camera/camera.dart';
+import 'package:fides_calendar/registrazione.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:path/path.dart' show join;
 import 'package:path_provider/path_provider.dart';
 
 class CameraScreen extends StatefulWidget {
-  final List<CameraDescription> cameras;
-
-  CameraScreen(this.cameras, {List<CameraDescription> camera});
+  // final List<CameraDescription> cameras;
 
   @override
   CameraScreenState createState() {
@@ -38,6 +42,7 @@ class CameraScreenState extends State<CameraScreen> {
   List<CameraDescription> _cameras;
   bool _isCameraReady = false;
   Future<void> _initializeControllerFuture;
+  File _image;
 
   @override
   void initState() {
@@ -51,10 +56,11 @@ class CameraScreenState extends State<CameraScreen> {
 
       _controller = new CameraController(_cameras[0], ResolutionPreset.medium);
 
-      _initializeControllerFuture = _controller.initialize();
-      await _initializeControllerFuture;
-
-      print(_controller.value.aspectRatio);
+      _controller.initialize().then((_) {
+        if (!mounted) {
+          return;
+        }
+      });
       setState(() {
         _isCameraReady = true;
       });
@@ -65,6 +71,20 @@ class CameraScreenState extends State<CameraScreen> {
     }
   }
 
+  Future getImageFromCam() async {
+    var image = await ImagePicker.pickImage(source: ImageSource.camera);
+    setState(() {
+      _image = image;
+    });
+  }
+
+  Future getImageFromGallery() async {
+    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      _image = image;
+    });
+  }
+
   @override
   void dispose() {
     _controller?.dispose();
@@ -73,49 +93,54 @@ class CameraScreenState extends State<CameraScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (!_isCameraReady) {
-      return new Container(color: Colors.green);
-    }
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.white,
-        child: Icon(
-          Icons.camera_alt,
-          color: Colors.black,
-        ),
-        onPressed: () async {
-          try {
-            await _initializeControllerFuture;
-
-            final path = join(
-              (await getTemporaryDirectory()).path,
-              '${DateTime.now()}.png',
-            );
-
-            await _controller.takePicture(path);
-
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => DisplayPictureScreen(imagePath: path),
-              ),
-            );
-          } catch (e) {
-            print(e);
-          }
-        },
-      ),
-      body: Transform.scale(
-        scale: _controller.value.aspectRatio /
-            (MediaQuery.of(context).size.width /
-                MediaQuery.of(context).size.height),
-        child: Center(
-          child: new AspectRatio(
-            aspectRatio: _controller.value.aspectRatio,
-            child: CameraPreview(_controller),
-          ),
-        ),
-      ),
-    );
+    return _isCameraReady == false
+        ? Container(
+            color: Colors.blueGrey,
+          )
+        : Scaffold(
+            appBar: AppBar(
+              title: Text('SCEGLI IMMAGINE'),
+            ),
+            body: ListView(children: <Widget>[
+              Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 200,
+                  child: Center(
+                      child: _image == null
+                          ? Text('SELEZIONA LA TUA IMMAGINE')
+                          : Image.file(_image))),
+              RaisedButton(
+                  color: Color.fromRGBO(174, 0, 17, 1),
+                  onPressed: () async {
+                    String base64Image = base64Encode(_image.readAsBytesSync());
+                    http.put(
+                        // "https://immense-anchorage-57010.herokuapp.com/api/user/" +
+                        //   Authorization.getLoggedUser().id +
+                        //  "/image",
+                        "https://immense-anchorage-57010.herokuapp.com/test",
+                        body: {"updatePic": base64Image}).then((response) => {
+                          if (response.statusCode == 200)
+                            {Authorization.saveToken(response.body)}
+                        });
+                  },
+                  child: Text('AGGIUNGI QUESTA FOTO')),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  FloatingActionButton(
+                    onPressed: getImageFromGallery,
+                    tooltip: 'Pick Image',
+                    child: Icon(Icons.wallpaper),
+                  ),
+                  FloatingActionButton(
+                      backgroundColor: Colors.white,
+                      child: Icon(
+                        Icons.camera_alt,
+                        color: Colors.black,
+                      ),
+                      onPressed: getImageFromCam),
+                ],
+              )
+            ]));
   }
 }

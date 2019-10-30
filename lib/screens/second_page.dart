@@ -36,7 +36,7 @@ class _SecondPageState extends State<SecondPage> {
                         Navigator.push(
                             context,
                             PageTransition(
-                                child: CameraScreen(cameras),
+                                child: CameraScreen(),
                                 type: PageTransitionType.fade));
                       },
                       child: Container(

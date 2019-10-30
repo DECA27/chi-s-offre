@@ -14,27 +14,24 @@ class User {
   String profilePicUrl;
 
   User(this.email, this.password, this.firstName, this.lastName, this.id,
-      this.celebrations,this.profilePicKey,this.profilePicUrl);
+      this.celebrations, this.profilePicKey, this.profilePicUrl);
 
   User.fromJson(Map json)
-  
       : email = json['email'],
         password = json['password'],
         firstName = json['firstName'],
         lastName = json['lastName'],
         id = json['id'],
-        celebrations = json['celebrations'] == null
-            ? null
-            : json['celebrations']
+        celebrations =  (json['celebrations'] as Iterable)
                 .map((celebrations) => Celebration.fromJson(celebrations))
                 .toList(),
-                profilePicKey= json['profilePicKey'],
-                profilePicUrl= json['profilePicUrl'];
+        profilePicKey = json['profilePicKey'],
+        profilePicUrl = json['profilePicUrl'];
 
   Map toJson() {
     return {
-      'profilePicUrl':profilePicUrl,
-      'profilePicKey':profilePicKey,
+      'profilePicUrl': profilePicUrl,
+      'profilePicKey': profilePicKey,
       'email': email,
       'password': password,
       'firstName': firstName,

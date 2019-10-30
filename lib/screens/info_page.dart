@@ -1,6 +1,6 @@
-import 'package:camera/camera.dart';
+// import 'package:camera/camera.dart';
 import 'package:fides_calendar/models/celebration.dart';
-import 'package:fides_calendar/screens/camera_screen.dart';
+// import 'package:fides_calendar/screens/camera_screen.dart';
 import 'package:fides_calendar/screens/organizes.dart';
 import 'package:fides_calendar/util/date_format.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +13,8 @@ class InfoPage extends StatefulWidget {
  
   
   final celebrationId;
-  final List<CameraDescription> cameras;
-  const InfoPage({Key key, @required this.celebrationId, @required this.cameras}) : super(key: key);
+  // final List<CameraDescription> cameras;
+  const InfoPage({Key key, @required this.celebrationId}) : super(key: key);
 
   @override
   _InfoPageState createState() => _InfoPageState();
@@ -81,10 +81,10 @@ class _InfoPageState extends State<InfoPage> {
               label: 'Aggiungi qui le tue foto',
               labelStyle: TextStyle(fontSize: 15.0),
               onTap: () {
-                Navigator.push(
-                    context,
-                    PageTransition(
-                        child: CameraScreen(widget.cameras), type: PageTransitionType.fade));
+                // Navigator.push(
+                //     context,
+                //     PageTransition(
+                //         child: CameraScreen(widget.cameras), type: PageTransitionType.fade));
               }),
           SpeedDialChild(
               child: Icon(Icons.create, color: Colors.black),
