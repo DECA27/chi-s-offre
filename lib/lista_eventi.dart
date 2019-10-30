@@ -157,9 +157,7 @@ class _ListaEventiState extends State<ListaEventi> {
                         ],
                       ),
                     )),
-                iconBackground: Colors.transparent,
-                dateString:
-                    "${DateTime.parse(_celebrations[i].date).day.toString()}\n${DateFormat.numberToString(DateTime.parse(_celebrations[i].date).month)}");
+                iconBackground: Colors.transparent);
           },
           position: TimelinePosition.Left,
           itemCount: _celebrations.length,

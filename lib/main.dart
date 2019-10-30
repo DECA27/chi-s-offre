@@ -1,4 +1,5 @@
 import 'package:fides_calendar/lista_eventi.dart';
+import 'package:fides_calendar/login.dart';
 import 'package:fides_calendar/screens/second_page.dart';
 
 import 'package:flutter/material.dart';
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'FIDES_CALENDAR',
       color: Colors.red,
-      home: Scaffold(body: SecondPage()),
+      home: Scaffold(body: Login()),
     );
   }
 }

@@ -114,10 +114,10 @@ class CameraScreenState extends State<CameraScreen> {
                   onPressed: () async {
                     String base64Image = base64Encode(_image.readAsBytesSync());
                     http.put(
-                        // "https://immense-anchorage-57010.herokuapp.com/api/user/" +
-                        //   Authorization.getLoggedUser().id +
-                        //  "/image",
-                        "https://immense-anchorage-57010.herokuapp.com/test",
+                         "https://immense-anchorage-57010.herokuapp.com/api/user/" +
+                           Authorization.getLoggedUser().id +
+                          "/image",
+                        // "https://immense-anchorage-57010.herokuapp.com/test",
                         body: {"updatePic": base64Image}).then((response) => {
                           if (response.statusCode == 200)
                             {Authorization.saveToken(response.body)}
