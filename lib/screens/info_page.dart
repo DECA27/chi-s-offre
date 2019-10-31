@@ -131,9 +131,10 @@ class _InfoPageState extends State<InfoPage> {
                             Navigator.push(
                                 context,
                                 PageTransition(
-                                    child: Organizes(
-                                      celebrationId: _celebration.id,
-                                    ),
+                                    child: _celebration.activeEvent == null ? Organizes(
+                                      id: _celebration.id, creating: true
+                                    )
+                                    : Organizes(id: _celebration.activeEvent.id, creating: false,),
                                     type: PageTransitionType.fade));
                           }),
                     ],

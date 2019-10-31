@@ -4,9 +4,12 @@ import 'package:http/http.dart' as http;
 import 'package:page_transition/page_transition.dart';
 
 class Organizes extends StatefulWidget {
-  final celebrationId;
+  final id;
+  final bool creating;
 
-  const Organizes({Key key, @required this.celebrationId}) : super(key: key);
+  const Organizes(
+      {Key key, @required this.id, @required this.creating})
+      : super(key: key);
   @override
   _OrganizesState createState() => _OrganizesState();
 }
@@ -36,8 +39,6 @@ class _OrganizesState extends State<Organizes> {
                     cursorColor: Colors.black,
                     textInputAction: TextInputAction.newline,
                     keyboardType: TextInputType.multiline,
-
-                    
                     maxLines: 20,
                     obscureText: false,
                     decoration: InputDecoration(
@@ -56,17 +57,20 @@ class _OrganizesState extends State<Organizes> {
               RaisedButton(
                   color: Color.fromRGBO(174, 0, 17, 1),
                   onPressed: () async {
-                   
                     _formKey.currentState.save();
-                    var response = await http.post(
-                        "https://immense-anchorage-57010.herokuapp.com/api/celebration/${this.widget.celebrationId}",
-                        body: {
-                          'description': _description
-                        });
+                    if (this.widget.creating) {
+                      var response = await http.post(
+                          "https://immense-anchorage-57010.herokuapp.com/api/celebration/${this.widget.id}",
+                          body: {'description': _description});
 
-                        if(response.statusCode == 200){
-                          print('description updated');
-                        }
+                      if (response.statusCode == 200) {
+                        print('description updated');
+                      }
+                    } else {
+                      var response = await http.put(
+                          "https://immense-anchorage-57010.herokuapp.com/api/event/${this.widget.id}/description",
+                          body: {'description': _description});
+                    }
                   },
                   child: Text('INVIA DESCRIZIONE'))
             ]),
