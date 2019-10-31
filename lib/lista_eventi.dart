@@ -74,6 +74,24 @@ class _ListaEventiState extends State<ListaEventi> {
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        color: Colors.white,
+        child: Center(
+          child: SizedBox(
+            height: 100,
+            width: 100,
+            child: CircularProgressIndicator(
+                backgroundColor: Colors.white,
+                valueColor: AlwaysStoppedAnimation<Color>(
+                    Color.fromRGBO(174, 0, 30, 1)),
+                strokeWidth: 5),
+          ),
+        ),
+      );
+    } else {
     return Scaffold(
       appBar: AppBar(
         actions: <Widget>[
@@ -170,6 +188,7 @@ class _ListaEventiState extends State<ListaEventi> {
         ),
       ),
     );
+    }
   }
 }
 

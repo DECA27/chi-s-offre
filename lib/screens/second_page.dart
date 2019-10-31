@@ -1,3 +1,5 @@
+import 'package:fides_calendar/authorization/authorization.dart';
+import 'package:fides_calendar/environment/environment.dart';
 import 'package:fides_calendar/lista_eventi.dart';
 import 'package:fides_calendar/main.dart';
 import 'package:fides_calendar/screens/camera_screen.dart';
@@ -16,10 +18,8 @@ class _SecondPageState extends State<SecondPage> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(
-              context,
-              PageTransition(
-                  child: ListaEventi(), type: PageTransitionType.fade));
+          Navigator.of(context).pushNamedAndRemoveUntil(
+              '/events', (Route<dynamic> route) => false);
         },
         backgroundColor: Colors.transparent,
         child: Text('SALTA'),
@@ -36,7 +36,13 @@ class _SecondPageState extends State<SecondPage> {
                         Navigator.push(
                             context,
                             PageTransition(
-                                child: CameraScreen(),
+                                child: CameraScreen(
+                                  requestMethod: 'PUT',
+                                  requestUrl:
+                                      '${Environment.siteUrl}/user/${Authorization.getLoggedUser().id}/image',
+                                  requestField: 'updatePic',
+                                  updateToken: true,
+                                ),
                                 type: PageTransitionType.fade));
                       },
                       child: Container(

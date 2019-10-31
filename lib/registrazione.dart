@@ -55,7 +55,7 @@ class _RegistrazioneState extends State<Registrazione> {
       if (response.statusCode == 422) {
         errors = jsonDecode(response.body);
       } else if (response.statusCode == 200) {
-        Authorization.token = "Bearer "+response.body;
+        Authorization.token = "Bearer " + response.body;
       } else {
         throw Exception('Failed to load events');
       }
@@ -104,26 +104,24 @@ class _RegistrazioneState extends State<Registrazione> {
                     margin:
                         EdgeInsets.only(top: 30, left: _offset, right: _offset),
                     child: TextFormField(
-                       cursorColor: Colors.black,
+                      cursorColor: Colors.black,
                       validator: (value) {
                         if (value.isEmpty) {
                           return 'CAMPO OBBLIGATORIO';
                         }
                         return null;
                       },
-                      
                       obscureText: false,
                       decoration: InputDecoration(
-                         
-                        focusedBorder: OutlineInputBorder( borderRadius: BorderRadius.circular(32.0),borderSide: BorderSide(color: Colors.black)),
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(32.0),
+                            borderSide: BorderSide(color: Colors.black)),
                         contentPadding:
                             EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                         hintText: "Nome",
-
                         border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.transparent),
+                            borderSide: BorderSide(color: Colors.transparent),
                             borderRadius: BorderRadius.circular(32.0)),
-                           
                       ),
                       onSaved: (val) => setState(() {
                         userData.firstName = val;
@@ -134,7 +132,7 @@ class _RegistrazioneState extends State<Registrazione> {
                     margin: EdgeInsets.only(
                         top: _offset, left: _offset, right: _offset),
                     child: TextFormField(
-                      cursorColor: Colors.black,
+                        cursorColor: Colors.black,
                         validator: (value) {
                           if (value.isEmpty) {
                             return 'CAMPO OBBLIGATORIO';
@@ -143,8 +141,9 @@ class _RegistrazioneState extends State<Registrazione> {
                         },
                         obscureText: false,
                         decoration: InputDecoration(
-                          
-                           focusedBorder: OutlineInputBorder( borderRadius: BorderRadius.circular(32.0),borderSide: BorderSide(color: Colors.black)),
+                            focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(32.0),
+                                borderSide: BorderSide(color: Colors.black)),
                             contentPadding:
                                 EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                             hintText: "Cognome",
@@ -202,7 +201,7 @@ class _RegistrazioneState extends State<Registrazione> {
                     margin: EdgeInsets.only(
                         top: _offset, left: _offset, right: _offset),
                     child: TextFormField(
-                       cursorColor: Colors.black,
+                        cursorColor: Colors.black,
                         validator: (value) {
                           if (value.isEmpty) {
                             return 'CAMPO OBBLIGATORIO';
@@ -215,7 +214,9 @@ class _RegistrazioneState extends State<Registrazione> {
                         },
                         obscureText: false,
                         decoration: InputDecoration(
-                           focusedBorder: OutlineInputBorder( borderRadius: BorderRadius.circular(32.0),borderSide: BorderSide(color: Colors.black)),
+                            focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(32.0),
+                                borderSide: BorderSide(color: Colors.black)),
                             contentPadding:
                                 EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                             hintText: "Email",
@@ -229,7 +230,7 @@ class _RegistrazioneState extends State<Registrazione> {
                     margin: EdgeInsets.only(
                         top: _offset, left: _offset, right: _offset),
                     child: TextFormField(
-                         cursorColor: Colors.black,
+                        cursorColor: Colors.black,
                         validator: (value) {
                           if (value.isEmpty) {
                             return 'CAMPO OBBLIGATORIO';
@@ -243,7 +244,9 @@ class _RegistrazioneState extends State<Registrazione> {
                         },
                         obscureText: true,
                         decoration: InputDecoration(
-                           focusedBorder: OutlineInputBorder( borderRadius: BorderRadius.circular(32.0),borderSide: BorderSide(color: Colors.black)),
+                            focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(32.0),
+                                borderSide: BorderSide(color: Colors.black)),
                             contentPadding:
                                 EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                             hintText: "Password",
@@ -271,14 +274,16 @@ class _RegistrazioneState extends State<Registrazione> {
                                       if (errors.length > 0)
                                         {print(errors)}
                                       else
-                                        {
-                                          Navigator.push(
-                                              context,
-                                              PageTransition(
-                                                  child: SecondPage(),
-                                                  type: PageTransitionType
-                                                      .rightToLeft))
-                                        }
+                                        Authorization.login(
+                                            userData.email, userData.password),
+                                      {
+                                        Navigator.push(
+                                            context,
+                                            PageTransition(
+                                                child: SecondPage(),
+                                                type: PageTransitionType
+                                                    .rightToLeft))
+                                      }
                                     })
                                 .catchError((error) => {print(error)});
                         },

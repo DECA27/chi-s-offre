@@ -52,7 +52,7 @@ class _InfoUserState extends State<InfoUser> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          automaticallyImplyLeading: false,
+          automaticallyImplyLeading: true,
           backgroundColor: Color.fromRGBO(174, 0, 17, 1),
           title: Center(child: Text('PROFILO', textAlign: TextAlign.start)),
           elevation: 0,
@@ -110,7 +110,8 @@ class _InfoUserState extends State<InfoUser> {
                           height: 50,
                           color: Colors.transparent,
                           child: Text(
-                            '${_user.celebrations[1].celebrationType}: ${DateTime.parse(_user.celebrations[1].date).day} ${DateFormat.numberToString(DateTime.parse(_user.celebrations[1].date).month)}',
+                            _user.celebrations.length > 1 ? '${_user.celebrations[1].celebrationType}: ${DateTime.parse(_user.celebrations[1].date).day} ${DateFormat.numberToString(DateTime.parse(_user.celebrations[1].date).month)}' 
+                            : 'Nessuno onomastico trovato',
                             style: TextStyle(fontSize: 20),
                           ),
                         ),
@@ -126,11 +127,7 @@ class _InfoUserState extends State<InfoUser> {
                                   EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                               onPressed: (){
                                 Authorization.logout();
-                                Navigator.push(
-                                    context,
-                                    PageTransition(
-                                        child: Login(),
-                                        type: PageTransitionType.rightToLeft));
+                                Navigator.popUntil(context,ModalRoute.withName('/'));
                               },
                               child: Text(
                                 "LOGOUT",

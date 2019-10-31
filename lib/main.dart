@@ -18,16 +18,17 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([
-DeviceOrientation.portraitUp,
-DeviceOrientation.portraitDown
-    ]);
+    SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     return MaterialApp(
+      initialRoute: '/',
+      routes: {
+        '/': (context) => Login(),
+        '/events': (context) => ListaEventi()
+      },
       debugShowCheckedModeBanner: false,
       title: 'FIDES_CALENDAR',
       color: Colors.red,
-
-      home: Scaffold(body: Login()),
     );
   }
 }

@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:fides_calendar/authorization/authorization.dart';
+import 'package:fides_calendar/environment/environment.dart';
+import 'package:fides_calendar/lista_eventi.dart';
 import 'package:http/http.dart' as http;
 import 'package:camera/camera.dart';
 import 'package:fides_calendar/registrazione.dart';
@@ -10,11 +12,23 @@ import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:path/path.dart' show join;
+import 'package:path/path.dart' as prefix0;
 import 'package:path_provider/path_provider.dart';
 
 class CameraScreen extends StatefulWidget {
   // final List<CameraDescription> cameras;
+  final String requestUrl;
+  final String requestMethod;
+  final String requestField;
+  final bool updateToken;
 
+  const CameraScreen(
+      {Key key,
+      @required this.requestUrl,
+      @required this.requestMethod,
+      @required this.requestField,
+      @required this.updateToken})
+      : super(key: key);
   @override
   CameraScreenState createState() {
     return new CameraScreenState();
@@ -112,28 +126,41 @@ class CameraScreenState extends State<CameraScreen> {
               RaisedButton(
                   color: Color.fromRGBO(174, 0, 17, 1),
                   onPressed: () async {
-                    var request = new http.MultipartRequest(
-                        "PUT",
-                        Uri.parse(
-                            "https://immense-anchorage-57010.herokuapp.com/api/user/${Authorization.getLoggedUser().id}/image"));
-                    request.files.add(await http.MultipartFile.fromPath('updatePic', _image.path));
-                    request.send().then((responseStream) async {
-                      if (responseStream.statusCode == 200){
-                        var response = await http.Response.fromStream(responseStream);
-                        Authorization.token = response.body;
-                      };
-                    });
+                    try {
+                      var request = new http.MultipartRequest(
+                          "PUT", Uri.parse(this.widget.requestUrl));
+                      request.files.add(await http.MultipartFile.fromPath(
+                          this.widget.requestField, _image.path));
+                      request.send().then((responseStream) async {
+                        if (responseStream.statusCode == 200) {
+                          if (this.widget.updateToken) {
+                            var response =
+                                await responseStream.stream.bytesToString();
+                            Authorization.saveToken(response);
+                          }
+                          Navigator.push(
+                              context,
+                              PageTransition(
+                                  child: ListaEventi(),
+                                  type: PageTransitionType.fade));
+                        }
+                      });
+                    } catch (e) {
+                      print('Token not valid');
+                    }
                   },
                   child: Text('AGGIUNGI QUESTA FOTO')),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   FloatingActionButton(
+                    heroTag: "btn1",
                     onPressed: getImageFromGallery,
                     tooltip: 'Pick Image',
                     child: Icon(Icons.wallpaper),
                   ),
                   FloatingActionButton(
+                      heroTag: "btr2",
                       backgroundColor: Colors.white,
                       child: Icon(
                         Icons.camera_alt,

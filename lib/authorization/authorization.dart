@@ -23,24 +23,29 @@ class Authorization {
     }
   }
 
-  static void saveToken(String responseToken){
+  static void saveToken(String responseToken) {
     token = "Bearer " + responseToken;
   }
 
   static Map<String, dynamic> _parseJwt() {
-    final pieces = token.split(' ');
-    final parts = pieces[1].split('.');
-    if (parts.length != 3) {
-      throw Exception('invalid token');
-    }
+    try {
+      final pieces = token.split(' ');
+      final parts = pieces[1].split('.');
+      if (parts.length != 3) {
+        throw Exception('invalid token');
+      }
 
-    final payload = _decodeBase64(parts[1]);
-    final payloadMap = json.decode(payload);
-    if (payloadMap is! Map<String, dynamic>) {
-      throw Exception('invalid payload');
-    }
+      final payload = _decodeBase64(parts[1]);
+      final payloadMap = json.decode(payload);
+      if (payloadMap is! Map<String, dynamic>) {
+        throw Exception('invalid payload');
+      }
 
-    return payloadMap;
+      return payloadMap;
+    } catch (e) {
+      print(e);
+      return null;
+    }
   }
 
   static String _decodeBase64(String str) {
@@ -63,7 +68,11 @@ class Authorization {
   }
 
   static User getLoggedUser() {
-    
-    return User.fromJson(_parseJwt()['user']);
+    try {
+      return User.fromJson(_parseJwt()['user']);
+    } catch (e) {
+      print(e);
+      return null;
+    }
   }
 }

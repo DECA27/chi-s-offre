@@ -19,9 +19,11 @@ class Event {
   Menu menu;
   Poll poll;
   List<Review> reviews;
+  List<String> eventImagesKeys;
+  List<String> eventImagesUrls;
 
   Event(this.id, this.average, this.celebrationDate, this.status,
-      this.celebration, this.menu, this.poll, this.reviews,this.description);
+      this.celebration, this.menu, this.poll, this.reviews,this.description,this.eventImagesKeys,this.eventImagesUrls);
 
   Event.fromJson(Map json)
       : id = json['id'],
@@ -32,8 +34,10 @@ class Event {
         menu = json['menu'] == null ? null : Menu.fromJson(json['menu']),
         poll = json['poll'] == null ? null : Poll.fromJson(json['poll']),
         reviews = json['reviews'] == null ? null : List<Review>.from(json['reviews'].map((review)=> Review.fromJson(review)).toList()),
-        description= json ['description'];
-
+        description= json ['description'],
+        eventImagesKeys=(json['eventImagesKeys'] as Iterable).map((key) => key.toString()).toList(),
+        eventImagesUrls=(json['eventImagesUrl'] as Iterable).map((key) => key.toString()).toList();
+        
   Map toJson() {
     return {
       'id': id,
@@ -44,7 +48,9 @@ class Event {
       'menu': menu.toJson(),
       'poll': poll.toJson(),
       'reviews': reviews,
-      'description' : description
+      'description' : description,
+      'eventImagesKeys' : eventImagesKeys,
+      'eventImagesUrls': eventImagesUrls
     };
   }
 }

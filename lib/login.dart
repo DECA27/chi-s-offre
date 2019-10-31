@@ -21,16 +21,15 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: ListView(
         children: <Widget>[
           Container(
-              width: double.infinity,
+              width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
               color: Colors.white,
               child: Padding(
-                  padding: const EdgeInsets.all(46.0),
+                  padding: const EdgeInsets.all(32.0),
                   child: Form(
                       key: _formKey,
                       child: Column(children: <Widget>[
@@ -49,7 +48,7 @@ class _LoginState extends State<Login> {
                                 margin: EdgeInsets.only(
                                     top: 60, left: 20, right: 20),
                                 child: TextFormField(
-                                   cursorColor: Colors.black,
+                                  cursorColor: Colors.black,
                                   validator: (value) {
                                     if (value.isEmpty) {
                                       return 'CAMPO OBBLIGATORIO';
@@ -58,7 +57,11 @@ class _LoginState extends State<Login> {
                                   },
                                   obscureText: false,
                                   decoration: InputDecoration(
-                                    focusedBorder: OutlineInputBorder( borderRadius: BorderRadius.circular(32.0),borderSide: BorderSide(color: Colors.black)),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(32.0),
+                                        borderSide:
+                                            BorderSide(color: Colors.black)),
                                     contentPadding: EdgeInsets.fromLTRB(
                                         20.0, 15.0, 20.0, 15.0),
                                     hintText: "Email",
@@ -75,7 +78,7 @@ class _LoginState extends State<Login> {
                                 margin: EdgeInsets.only(
                                     top: 40, left: 20, right: 20),
                                 child: TextFormField(
-                                   cursorColor: Colors.black,
+                                    cursorColor: Colors.black,
                                     validator: (value) {
                                       if (value.isEmpty) {
                                         return 'CAMPO OBBLIGATORIO';
@@ -84,7 +87,11 @@ class _LoginState extends State<Login> {
                                     },
                                     obscureText: true,
                                     decoration: InputDecoration(
-                                      focusedBorder: OutlineInputBorder( borderRadius: BorderRadius.circular(32.0),borderSide: BorderSide(color: Colors.black)),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(32.0),
+                                            borderSide: BorderSide(
+                                                color: Colors.black)),
                                         contentPadding: EdgeInsets.fromLTRB(
                                             20.0, 15.0, 20.0, 15.0),
                                         hintText: "Password",
@@ -113,14 +120,12 @@ class _LoginState extends State<Login> {
                                             .then((validated) => {
                                                   if (validated)
                                                     {
-                                                      Navigator.push(
-                                                          context,
-                                                          PageTransition(
-                                                              child:
-                                                                  ListaEventi(),
-                                                              type:
-                                                                  PageTransitionType
-                                                                      .fade))
+                                                      Navigator.of(context)
+                                                          .pushNamedAndRemoveUntil(
+                                                              '/events',
+                                                              (Route<dynamic>
+                                                                      route) =>
+                                                                  false)
                                                     }
                                                   else
                                                     {
@@ -141,6 +146,8 @@ class _LoginState extends State<Login> {
                                   margin: EdgeInsets.only(top: 20, bottom: 20),
                                   child: Text('Non sei registrato?')),
                               RaisedButton(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20)),
                                   color: Color.fromRGBO(174, 0, 17, 1),
                                   onPressed: () {
                                     Navigator.push(
