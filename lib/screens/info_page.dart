@@ -13,6 +13,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:page_transition/page_transition.dart';
 import 'dart:convert' show jsonDecode;
 import 'package:http/http.dart' as http;
+import 'package:flutter/cupertino.dart';
 
 class InfoPage extends StatefulWidget {
   final celebrationId;
@@ -63,6 +64,8 @@ class _InfoPageState extends State<InfoPage> {
 
   @override
   Widget build(BuildContext context) {
+    var screenHeigth = MediaQuery.of(context).size.height;
+    var screenWidth = MediaQuery.of(context).size.width;
     if (_isLoading) {
       return Container(
         width: MediaQuery.of(context).size.width,
@@ -81,34 +84,83 @@ class _InfoPageState extends State<InfoPage> {
         ),
       );
     } else {
-      return Scaffold(
-        floatingActionButton:
-            _celebration.celebrated.id == Authorization.getLoggedUser().id
-                ? SpeedDial(
-                    marginRight: 18,
-                    marginBottom: 20,
-                    animatedIcon: AnimatedIcons.menu_close,
-                    animatedIconTheme: IconThemeData(size: 22.0),
-                    closeManually: false,
-                    curve: Curves.bounceIn,
-                    overlayColor: Colors.transparent,
-                    overlayOpacity: 0.5,
-                    onOpen: () => print('OPEN'),
-                    onClose: () => print('CLOSE'),
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.black,
-                    elevation: 8.0,
-                    shape: CircleBorder(),
-                    children: [
-                      SpeedDialChild(
-                          child: Icon(
-                            Icons.camera_alt,
-                            color: Colors.black,
-                          ),
-                          backgroundColor: Colors.white,
-                          label: 'Aggiungi qui le tue foto',
-                          labelStyle: TextStyle(fontSize: 15.0),
-                          onTap: () {
+      return Container(
+        height: MediaQuery.of(context).size.height,
+        child: Scaffold(
+          floatingActionButton: _celebration.celebrated.id ==
+                  Authorization.getLoggedUser().id
+              ? SpeedDial(
+                  marginRight: 18,
+                  marginBottom: 20,
+                  animatedIcon: AnimatedIcons.menu_close,
+                  animatedIconTheme: IconThemeData(size: 22.0),
+                  closeManually: false,
+                  curve: Curves.bounceIn,
+                  overlayColor: Colors.transparent,
+                  overlayOpacity: 0.5,
+                  onOpen: () => print('OPEN'),
+                  onClose: () => print('CLOSE'),
+                  backgroundColor: Color.fromRGBO(174, 0, 17, 1),
+                  foregroundColor: Colors.black,
+                  elevation: 8.0,
+                  shape: CircleBorder(),
+                  children: [
+                    SpeedDialChild(
+                        child: Icon(
+                          Icons.camera_alt,
+                          color: Colors.black,
+                        ),
+                        backgroundColor: Colors.white,
+                        label: 'Aggiungi qui le tue foto',
+                        labelStyle: TextStyle(fontSize: 15.0),
+                        onTap: () {
+                          if (_celebration.activeEvent == null) {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: Text('ATTENZIONE!!!!',
+                                        textAlign: TextAlign.center),
+                                    content: Text(
+                                        "Prima di aggiungere una foto all'evento, inserire una descrizione!"),
+                                    actions: <Widget>[
+                                      FlatButton(
+                                        child: Text(
+                                          'Capisco!',
+                                          style: TextStyle(color: Colors.black),
+                                        ),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      )
+                                    ],
+                                  );
+                                });
+                          } else if (_celebration
+                                  .activeEvent.eventImagesUrls.length >=
+                              3) {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: Text('ATTENZIONE!!!!',
+                                        textAlign: TextAlign.center),
+                                    content: Text(
+                                        'Numero massimo di foto raggiunto'),
+                                    actions: <Widget>[
+                                      FlatButton(
+                                        child: Text(
+                                          'Capisco :(',
+                                          style: TextStyle(color: Colors.black),
+                                        ),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      )
+                                    ],
+                                  );
+                                });
+                          } else {
                             Navigator.push(
                                 context,
                                 PageTransition(
@@ -116,101 +168,127 @@ class _InfoPageState extends State<InfoPage> {
                                       requestMethod: 'PUT',
                                       requestUrl:
                                           '${Environment.siteUrl}/event/${_celebration.activeEvent.id}/image',
-                                      requestField: 'eventPic', updateToken: false,
+                                      requestField: 'eventPic',
+                                      updateToken: false,
                                     ),
                                     type: PageTransitionType.fade));
-                          }),
-                      SpeedDialChild(
-                          child: Icon(Icons.create, color: Colors.black),
-                          backgroundColor: Colors.white,
-                          label: 'Aggiungi qui la tua descrizione',
-                          labelStyle:
-                              TextStyle(fontSize: 15.0, color: Colors.black),
-                          labelBackgroundColor: Colors.white,
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                PageTransition(
-                                    child: _celebration.activeEvent == null ? Organizes(
-                                      id: _celebration.id, creating: true
-                                    )
-                                    : Organizes(id: _celebration.activeEvent.id, creating: false,),
-                                    type: PageTransitionType.fade));
-                          }),
-                    ],
-                  )
-                : null,
-        body: SingleChildScrollView(
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            decoration: BoxDecoration(
-                color: Color.fromRGBO(174, 0, 17, 1),
-                image: DecorationImage(
-                    fit: BoxFit.cover,
-                    image: NetworkImage(
-                        "https://static.iphoneitalia.com/wp-content/uploads/2014/03/iPhone-3G3GS-22.jpg"))),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Row(
+                          }
+                        }),
+                    SpeedDialChild(
+                        child: Icon(Icons.create, color: Colors.black),
+                        backgroundColor: Colors.white,
+                        label: 'Aggiungi qui la tua descrizione',
+                        labelStyle:
+                            TextStyle(fontSize: 15.0, color: Colors.black),
+                        labelBackgroundColor: Colors.white,
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              PageTransition(
+                                  child: _celebration.activeEvent == null
+                                      ? Organizes(
+                                          id: _celebration.id,
+                                          creating: true,
+                                          updateDescriptionCallback:
+                                              _getCelebration,
+                                        )
+                                      : Organizes(
+                                          id: _celebration.activeEvent.id,
+                                          creating: false,
+                                          updateDescriptionCallback:
+                                              _getCelebration,
+                                        ),
+                                  type: PageTransitionType.fade));
+                        }),
+                  ],
+                )
+              : null,
+          body: Center(
+            child: Container(
+              alignment: Alignment.center,
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              child: ListView(children: <Widget>[
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        Center(
+                            child: Container(
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(20.0),
+                                      topRight: Radius.circular(20.0),
+                                      bottomLeft: Radius.circular(20.0),
+                                      bottomRight: Radius.circular(20.0)),
+                                  color: Color.fromRGBO(174, 0, 17, 1),
+                                ),
+                                margin: EdgeInsets.symmetric(
+                                    vertical: screenHeigth / 100 * 3,
+                                    horizontal: screenWidth / 100 * 10),
+                                width: screenWidth / 100 * 80,
+                                height: screenHeigth / 100 * 20,
+                                child: Text(
+                                  "${_celebration.celebrated.firstName} ${_celebration.celebrated.lastName}\n" +
+                                      "${DateTime.parse(_celebration.date).day} " +
+                                      "${DateFormat.numberToString(DateTime.parse(_celebration.date).month)}\n" +
+                                      "${_celebration.celebrationType}",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 25,
+                                    color: Colors.black,
+                                  ),
+                                )))
+                      ],
+                    ),
                     Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(20.0),
-                                topRight: Radius.circular(20.0),
-                                bottomLeft: Radius.circular(20.0),
-                                bottomRight: Radius.circular(20.0)),
-                            color: Colors.white),
-                        margin: EdgeInsets.only(top: 90, left: 20, right: 20),
-                        width: 320,
-                        height: 120,
-                        child: Text(
-                          "${_celebration.celebrated.firstName} ${_celebration.celebrated.lastName}\n" +
-                              "${DateTime.parse(_celebration.date).day} " +
-                              "${DateFormat.numberToString(DateTime.parse(_celebration.date).month)}\n" +
-                              "${_celebration.celebrationType}",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 25,
-                            color: Colors.black,
-                          ),
-                        ))
+                      decoration: BoxDecoration(
+                          color: Color.fromRGBO(174, 0, 17, 1),
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(20.0),
+                              topRight: Radius.circular(20.0),
+                              bottomLeft: Radius.circular(20.0),
+                              bottomRight: Radius.circular(20.0))),
+                      margin: EdgeInsets.symmetric(
+                          vertical: screenHeigth / 100 * 3,
+                          horizontal: screenWidth / 100 * 10),
+                      width: screenWidth / 100 * 80,
+                      height: screenHeigth / 100 * 50,
+                      child: Text(
+                        _celebration.activeEvent != null
+                            ? (_celebration.activeEvent.status +
+                                "\n" +
+                                _celebration.activeEvent.description)
+                            : "Nessun evento attivo",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontStyle: FontStyle.italic, fontSize: 20),
+                      ),
+                    ),
+                    (_celebration.activeEvent != null)
+                        ? RaisedButton(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20)),
+                            color: Color.fromRGBO(174, 0, 17, 1),
+                            onPressed: () {
+                              print(_celebration.activeEvent.eventImagesUrls);
+                              Navigator.push(
+                                  context,
+                                  PageTransition(
+                                      child: Gallery(
+                                    imageUrls: _celebration
+                                        .activeEvent.eventImagesUrls,
+                                  )));
+                            },
+                            child: Text('GALLERIA FOTO'))
+                        : Container()
                   ],
                 ),
-                Container(
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(20.0),
-                          topRight: Radius.circular(20.0),
-                          bottomLeft: Radius.circular(20.0),
-                          bottomRight: Radius.circular(20.0))),
-                  margin: EdgeInsets.only(top: 50, left: 20, right: 20),
-                  width: 320,
-                  height: 320,
-                  child: Text(
-                    _celebration.activeEvent != null
-                        ? (_celebration.activeEvent.status +
-                            "\n" +
-                            _celebration.activeEvent.description)
-                        : "Nessun evento attivo",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontStyle: FontStyle.italic, fontSize: 20),
-                  ),
-                ),
-                (_celebration.activeEvent != null ) ? RaisedButton(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20)),
-                    color: Color.fromRGBO(174, 0, 17, 1),
-                    onPressed: () {
-                      print(_celebration.activeEvent.eventImagesUrls);
-                      Navigator.push(context, PageTransition(child: Gallery(imageUrls: _celebration.activeEvent.eventImagesUrls,)));
-                    },
-                    child: Text('GALLERIA FOTO')) : Container()
-              ],
+              ]),
             ),
           ),
         ),

@@ -1,8 +1,11 @@
+import 'package:fides_calendar/firstpage.dart';
 import 'package:fides_calendar/lista_eventi.dart';
 import 'package:fides_calendar/login.dart';
+import 'package:fides_calendar/name_day.dart';
 import 'package:fides_calendar/registrazione.dart';
+import 'package:fides_calendar/screens/camera_screen.dart';
 import 'package:fides_calendar/screens/info_page.dart';
-
+import 'package:flutter/cupertino.dart';
 import 'package:fides_calendar/screens/second_page.dart';
 
 import 'package:flutter/material.dart';
@@ -23,8 +26,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       initialRoute: '/',
       routes: {
-        '/': (context) => Login(),
-        '/events': (context) => ListaEventi()
+        '/': (context) => FirstPage(),
+        '/login': (context) => Login(),
+        '/events': (context) => ListaEventi(),
+        '/nameDayError' : (context) => NameDay()
       },
       debugShowCheckedModeBanner: false,
       title: 'FIDES_CALENDAR',

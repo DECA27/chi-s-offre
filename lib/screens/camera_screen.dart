@@ -14,6 +14,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:path/path.dart' show join;
 import 'package:path/path.dart' as prefix0;
 import 'package:path_provider/path_provider.dart';
+import 'package:flutter/cupertino.dart';
 
 class CameraScreen extends StatefulWidget {
   // final List<CameraDescription> cameras;
@@ -57,6 +58,7 @@ class CameraScreenState extends State<CameraScreen> {
   bool _isCameraReady = false;
   Future<void> _initializeControllerFuture;
   File _image;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -107,68 +109,124 @@ class CameraScreenState extends State<CameraScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return _isCameraReady == false
-        ? Container(
-            color: Colors.blueGrey,
-          )
-        : Scaffold(
-            appBar: AppBar(
-              title: Text('SCEGLI IMMAGINE'),
-            ),
-            body: ListView(children: <Widget>[
-              Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 200,
-                  child: Center(
-                      child: _image == null
-                          ? Text('SELEZIONA LA TUA IMMAGINE')
-                          : Image.file(_image))),
-              RaisedButton(
-                  color: Color.fromRGBO(174, 0, 17, 1),
-                  onPressed: () async {
-                    try {
-                      var request = new http.MultipartRequest(
-                          "PUT", Uri.parse(this.widget.requestUrl));
-                      request.files.add(await http.MultipartFile.fromPath(
-                          this.widget.requestField, _image.path));
-                      request.send().then((responseStream) async {
-                        if (responseStream.statusCode == 200) {
-                          if (this.widget.updateToken) {
-                            var response =
-                                await responseStream.stream.bytesToString();
-                            Authorization.saveToken(response);
+    if (_isLoading) {
+      return Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        color: Colors.white,
+        child: Center(
+          child: SizedBox(
+            height: 100,
+            width: 100,
+            child: CircularProgressIndicator(
+                backgroundColor: Colors.white,
+                valueColor: AlwaysStoppedAnimation<Color>(
+                    Color.fromRGBO(174, 0, 30, 1)),
+                strokeWidth: 5),
+          ),
+        ),
+      );
+    } else {
+      AppBar appBar = AppBar(
+        title: Text('SCEGLI IMMAGINE'),
+        backgroundColor: Color.fromRGBO(174, 0, 17, 1),
+      );
+      var screenHeigth =
+          MediaQuery.of(context).size.height - appBar.preferredSize.height;
+      var screenWidth = MediaQuery.of(context).size.width;
+      return _isCameraReady == false
+          ? Container(
+              color: Colors.blueGrey,
+            )
+          : Scaffold(
+              appBar: appBar,
+              body: Container(
+                height: screenHeigth/100*90,
+                child: Column(children: <Widget>[
+                  Container(
+                      margin:
+                          EdgeInsets.symmetric(vertical: screenHeigth / 100 * 10),
+                      height: screenHeigth / 100 * 50,
+                      child: Center(
+                          child: _image == null
+                              ? Text(
+                                  'SELEZIONA LA TUA IMMAGINE DI PROFILO USANDO LA CAMERA O LA TUA GALLERIA',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: screenHeigth / 100 * 3.5,
+                                  ),
+                                )
+                              : Image.file(_image))),
+                  _image == null ? Container() : Container(
+                    margin:
+                        EdgeInsets.symmetric(horizontal: screenWidth / 100 * 10),
+                    child: RaisedButton(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20)),
+                        color: Color.fromRGBO(174, 0, 17, 1),
+                        onPressed: () async {
+                          setState(() {
+                            _isLoading = true;
+                          });
+                          try {
+                            var request = new http.MultipartRequest(
+                                "PUT", Uri.parse(this.widget.requestUrl));
+                            request.files.add(await http.MultipartFile.fromPath(
+                                this.widget.requestField, _image.path));
+                            request.send().then((responseStream) async {
+                              if (responseStream.statusCode == 200) {
+                                if (this.widget.updateToken) {
+                                  var response =
+                                      await responseStream.stream.bytesToString();
+                                  Authorization.saveToken(response);
+                                }
+                                Navigator.push(
+                                    context,
+                                    PageTransition(
+                                        child: ListaEventi(),
+                                        type: PageTransitionType.fade));
+                              } else {
+                                setState(() {
+                                  _isLoading = false;
+                                });
+                              }
+                            });
+                          } catch (e) {
+                            print('Token not valid');
                           }
-                          Navigator.push(
-                              context,
-                              PageTransition(
-                                  child: ListaEventi(),
-                                  type: PageTransitionType.fade));
-                        }
-                      });
-                    } catch (e) {
-                      print('Token not valid');
-                    }
-                  },
-                  child: Text('AGGIUNGI QUESTA FOTO')),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  FloatingActionButton(
-                    heroTag: "btn1",
-                    onPressed: getImageFromGallery,
-                    tooltip: 'Pick Image',
-                    child: Icon(Icons.wallpaper),
+                        },
+                        child: Text(
+                          'AGGIUNGI QUESTA FOTO',
+                          style: TextStyle(color: Colors.white),
+                        )),
                   ),
-                  FloatingActionButton(
-                      heroTag: "btr2",
-                      backgroundColor: Colors.white,
-                      child: Icon(
-                        Icons.camera_alt,
-                        color: Colors.black,
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          FloatingActionButton(
+                            heroTag: "btn1",
+                            backgroundColor: Color.fromRGBO(174, 0, 17, 1),
+                            onPressed: getImageFromGallery,
+                            tooltip: 'Pick Image',
+                            child: Icon(Icons.wallpaper),
+                          ),
+                          FloatingActionButton(
+                              heroTag: "btr2",
+                              backgroundColor: Color.fromRGBO(174, 0, 17, 1),
+                              child: Icon(
+                                Icons.camera_alt,
+                                color: Colors.white,
+                              ),
+                              onPressed: getImageFromCam),
+                        ],
                       ),
-                      onPressed: getImageFromCam),
-                ],
-              )
-            ]));
+                    ),
+                  ),
+                ]),
+              ));
+    }
   }
 }

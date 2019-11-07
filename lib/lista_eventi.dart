@@ -18,6 +18,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:timeline_list/timeline.dart';
 import 'package:timeline_list/timeline_model.dart';
 // import 'package:camera/camera.dart';
+import 'package:flutter/scheduler.dart';
 
 import 'dart:convert' show jsonDecode;
 import 'package:http/http.dart' as http;
@@ -70,6 +71,12 @@ class _ListaEventiState extends State<ListaEventi> {
   void initState() {
     _getEvents();
     super.initState();
+    if (Authorization.getLoggedUser().celebrations.length < 2) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        Navigator.pushNamed(context, '/nameDayError');
+      });
+    }
+    ;
   }
 
   @override
@@ -92,102 +99,109 @@ class _ListaEventiState extends State<ListaEventi> {
         ),
       );
     } else {
-    return Scaffold(
-      appBar: AppBar(
-        actions: <Widget>[
-          IconButton(
-            icon: Image.network(
-              Authorization.getLoggedUser().profilePicUrl,
+      return Scaffold(
+        appBar: AppBar(
+            actions: <Widget>[
+              GestureDetector(
+                child: Container(
+                  margin: EdgeInsets.all(5),
+                  width: 45,
+                  height: 45,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                        image: DecorationImage(
+                            image: NetworkImage(
+                  Authorization.getLoggedUser().profilePicUrl,
+                )))),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      PageTransition(
+                          child: InfoUser(
+                            userId: Authorization.getLoggedUser().id,
+                          ),
+                          type: PageTransitionType.fade));
+                },
+              ),
+            ],
+            automaticallyImplyLeading: false,
+            title: Center(
+              child: Text(
+                'CALENDAR',
+                style: TextStyle(color: Colors.white),
+              ),
             ),
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  PageTransition(
-                      child: InfoUser(
-                        userId: Authorization.getLoggedUser().id,
-                      ),
-                      type: PageTransitionType.fade));
-            },
-          ),
-        ],
-        automaticallyImplyLeading: false,
-        title: Center(child: Text('CALENDAR')),
-        elevation: 0,
-        backgroundColor: Color.fromRGBO(174, 0, 30, 1),
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-            color: Color.fromRGBO(174, 0, 17, 1),
-            image: DecorationImage(
-                fit: BoxFit.cover,
-                image: NetworkImage(
-                    "https://static.iphoneitalia.com/wp-content/uploads/2014/03/iPhone-3G3GS-22.jpg"))),
-        child: Timeline.builder(
-          itemBuilder: (context, i) {
-            return TimelineModel(
-                Container(
-                    color: Colors.transparent,
-                    width: MediaQuery.of(context).size.width,
-                    height: 180,
-                    child: Container(
-                      width: 100,
-                      height: 100,
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            flex: 1,
-                            child: GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                     context,
-                                     PageTransition(
-                                         child: InfoPage(
-                                           celebrationId: _celebrations[i].id,
-                                           camera: <CameraDescription>[],
-                                         ),
-                                         type: PageTransitionType.fade));
-                              },
-                              child: Container(
-                                  margin: EdgeInsets.only(
-                                      top: 20, left: 20, right: 0),
-                                  width: MediaQuery.of(context).size.width,
-                                  height: 100,
-                                  child: Align(
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      "${_celebrations[i].celebrationType[0].toUpperCase()}${_celebrations[i].celebrationType.substring(1)} di:\n" +
-                                          "${_celebrations[i].celebrated.firstName} ${_celebrations[i].celebrated.lastName}",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 25,
-                                          color: Colors.black),
-                                    ),
-                                  ),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.only(
-                                        bottomRight: Radius.circular(20.0),
-                                        topRight: Radius.circular(20.0),
-                                        topLeft: Radius.circular(20.0),
-                                        bottomLeft: Radius.circular(20.0),
+            elevation: 0,
+            backgroundColor: Color.fromRGBO(174, 0, 30, 1)),
+        body: Container(
+          decoration: BoxDecoration(color: Colors.white),
+          child: Timeline.builder(
+              itemBuilder: (context, i) {
+                return TimelineModel(
+                    Container(
+                        color: Colors.transparent,
+                        width: MediaQuery.of(context).size.width,
+                        height: 180,
+                        child: Container(
+                          width: 100,
+                          height: 100,
+                          child: Row(
+                            children: <Widget>[
+                              Expanded(
+                                flex: 1,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        PageTransition(
+                                            child: InfoPage(
+                                              celebrationId:
+                                                  _celebrations[i].id,
+                                              camera: <CameraDescription>[],
+                                            ),
+                                            type: PageTransitionType.fade));
+                                  },
+                                  child: Container(
+                                      margin: EdgeInsets.only(
+                                          top: 20, left: 20, right: 0),
+                                      width: MediaQuery.of(context).size.width,
+                                      height: 100,
+                                      child: Align(
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          "${_celebrations[i].celebrationType[0].toUpperCase()}${_celebrations[i].celebrationType.substring(1)} di:\n" +
+                                              "${_celebrations[i].celebrated.firstName} ${_celebrations[i].celebrated.lastName}",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 25,
+                                              color: Colors.white),
+                                        ),
                                       ),
-                                      color: Colors.white)),
-                            ),
-                          )
-                        ],
-                      ),
-                    )),
-                iconBackground: Colors.transparent,
-                dateString:
-                    "${DateTime.parse(_celebrations[i].date).day.toString()}\n${DateFormat.numberToString(DateTime.parse(_celebrations[i].date).month)}");
-          },
-          position: TimelinePosition.Left,
-          itemCount: _celebrations.length,
-          physics: BouncingScrollPhysics(),
-          lineColor: Colors.white,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.only(
+                                            bottomRight: Radius.circular(20.0),
+                                            topRight: Radius.circular(20.0),
+                                            topLeft: Radius.circular(20.0),
+                                            bottomLeft: Radius.circular(20.0),
+                                          ),
+                                          color:
+                                              Color.fromRGBO(174, 0, 30, 1))),
+                                ),
+                              )
+                            ],
+                          ),
+                        )),
+                    iconBackground: Colors.transparent,
+                    dateString:
+                        "${DateTime.parse(_celebrations[i].date).day.toString()}\n${DateFormat.numberToString(DateTime.parse(_celebrations[i].date).month)}");
+              },
+              position: TimelinePosition.Left,
+              itemCount: _celebrations.length,
+              physics: BouncingScrollPhysics(),
+              lineColor: Color.fromRGBO(174, 0, 30, 1)),
         ),
-      ),
-    );
+      );
     }
   }
 }

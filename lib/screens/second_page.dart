@@ -6,6 +6,7 @@ import 'package:fides_calendar/screens/camera_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:camera/camera.dart';
+import 'package:flutter/cupertino.dart';
 
 class SecondPage extends StatefulWidget {
   @override
