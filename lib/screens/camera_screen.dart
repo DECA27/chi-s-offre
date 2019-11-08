@@ -141,11 +141,11 @@ class CameraScreenState extends State<CameraScreen> {
           : Scaffold(
               appBar: appBar,
               body: Container(
-                height: screenHeigth/100*90,
+                height: screenHeigth / 100 * 90,
                 child: Column(children: <Widget>[
                   Container(
-                      margin:
-                          EdgeInsets.symmetric(vertical: screenHeigth / 100 * 10),
+                      margin: EdgeInsets.symmetric(
+                          vertical: screenHeigth / 100 * 10),
                       height: screenHeigth / 100 * 50,
                       child: Center(
                           child: _image == null
@@ -157,49 +157,58 @@ class CameraScreenState extends State<CameraScreen> {
                                   ),
                                 )
                               : Image.file(_image))),
-                  _image == null ? Container() : Container(
-                    margin:
-                        EdgeInsets.symmetric(horizontal: screenWidth / 100 * 10),
-                    child: RaisedButton(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20)),
-                        color: Color.fromRGBO(174, 0, 17, 1),
-                        onPressed: () async {
-                          setState(() {
-                            _isLoading = true;
-                          });
-                          try {
-                            var request = new http.MultipartRequest(
-                                "PUT", Uri.parse(this.widget.requestUrl));
-                            request.files.add(await http.MultipartFile.fromPath(
-                                this.widget.requestField, _image.path));
-                            request.send().then((responseStream) async {
-                              if (responseStream.statusCode == 200) {
-                                if (this.widget.updateToken) {
-                                  var response =
-                                      await responseStream.stream.bytesToString();
-                                  Authorization.saveToken(response);
-                                }
-                                Navigator.push(
-                                    context,
-                                    PageTransition(
-                                        child: ListaEventi(),
-                                        type: PageTransitionType.fade));
-                              } else {
+                  _image == null
+                      ? Container()
+                      : Container(
+                          margin: EdgeInsets.symmetric(
+                              horizontal: screenWidth / 100 * 10),
+                          child: RaisedButton(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20)),
+                              color: Color.fromRGBO(174, 0, 17, 1),
+                              onPressed: () async {
                                 setState(() {
-                                  _isLoading = false;
+                                  _isLoading = true;
                                 });
-                              }
-                            });
-                          } catch (e) {
-                            print('Token not valid');
-                          }
-                        },
-                        child: Text(
-                          'AGGIUNGI QUESTA FOTO',
-                          style: TextStyle(color: Colors.white),
-                        )),
-                  ),
+                                try {
+                                  var request = new http.MultipartRequest(
+                                      "PUT", Uri.parse(this.widget.requestUrl));
+                                  request.files.add(
+                                      await http.MultipartFile.fromPath(
+                                          this.widget.requestField,
+                                          _image.path));
+                                  request.headers.addAll({
+                                    HttpHeaders.authorizationHeader:
+                                        Authorization.token
+                                  });
+                                  request.send().then((responseStream) async {
+                                    if (responseStream.statusCode == 200) {
+                                      if (this.widget.updateToken) {
+                                        var response = await responseStream
+                                            .stream
+                                            .bytesToString();
+                                        Authorization.saveToken(response);
+                                      }
+                                      Navigator.push(
+                                          context,
+                                          PageTransition(
+                                              child: ListaEventi(),
+                                              type: PageTransitionType.fade));
+                                    } else {
+                                      setState(() {
+                                        _isLoading = false;
+                                      });
+                                    }
+                                  });
+                                } catch (e) {
+                                  print('Token not valid');
+                                }
+                              },
+                              child: Text(
+                                'AGGIUNGI QUESTA FOTO',
+                                style: TextStyle(color: Colors.white),
+                              )),
+                        ),
                   Expanded(
                     child: Align(
                       alignment: Alignment.bottomCenter,

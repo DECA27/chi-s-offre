@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:fides_calendar/authorization/authorization.dart';
 import 'package:fides_calendar/environment/environment.dart';
 import 'package:fides_calendar/screens/camera_screen.dart';
@@ -31,7 +32,10 @@ class _InfoUserState extends State<InfoUser> {
     try {
       final response = await http.get(
           "https://immense-anchorage-57010.herokuapp.com/api/user/${this.widget.userId}",
-          headers: {'Accept': 'application/json'});
+          headers: {
+            'Accept': 'application/json',
+            HttpHeaders.authorizationHeader: Authorization.token
+          });
 
       if (response.statusCode == 200) {
         _user = User.fromJson(jsonDecode(response.body));
@@ -59,7 +63,7 @@ class _InfoUserState extends State<InfoUser> {
       centerTitle: true,
       automaticallyImplyLeading: true,
       backgroundColor: Color.fromRGBO(174, 0, 17, 1),
-      title:  Text('PROFILO', textAlign: TextAlign.start),
+      title: Text('PROFILO', textAlign: TextAlign.start),
       elevation: 0,
     );
     var screenHeigth =
@@ -72,7 +76,7 @@ class _InfoUserState extends State<InfoUser> {
             : ListView(
                 children: <Widget>[
                   Container(
-                    height: screenHeigth/100*90,
+                    height: screenHeigth / 100 * 90,
                     child: Column(
                       children: <Widget>[
                         GestureDetector(
@@ -148,9 +152,8 @@ class _InfoUserState extends State<InfoUser> {
                                 child: MaterialButton(
                                   minWidth: MediaQuery.of(context).size.width,
                                   onPressed: () {
-                                    SharedPreferences.getInstance().then((prefs) => {
-                                      prefs.clear()
-                                    });
+                                    SharedPreferences.getInstance()
+                                        .then((prefs) => {prefs.clear()});
                                     Authorization.logout();
                                     Navigator.of(context)
                                         .pushNamedAndRemoveUntil('/login',

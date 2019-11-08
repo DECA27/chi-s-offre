@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:fides_calendar/environment/environment.dart';
 import 'package:fides_calendar/registrazione.dart';
 import 'package:fides_calendar/util/days_month.dart';
@@ -101,6 +103,9 @@ class _NameDayState extends State<NameDay> {
                         body: {
                           "day": _day.toString(),
                           "month": _month.toString()
+                        },
+                        headers: {
+                          HttpHeaders.authorizationHeader: Authorization.token
                         });
                     if (response.statusCode == 200) {
                       Authorization.saveToken(response.body);

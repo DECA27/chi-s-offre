@@ -1,4 +1,6 @@
 // import 'package:camera/camera.dart';
+import 'dart:io';
+
 import 'package:camera/camera.dart';
 import 'package:fides_calendar/authorization/authorization.dart';
 import 'package:fides_calendar/environment/environment.dart';
@@ -41,7 +43,9 @@ class _InfoPageState extends State<InfoPage> {
     try {
       final response = await http.get(
           "https://immense-anchorage-57010.herokuapp.com/api/celebration/${this.widget.celebrationId}",
-          headers: {'Accept': 'application/json'});
+          headers: {'Accept': 'application/json',
+           HttpHeaders.authorizationHeader: Authorization.token
+          });
       if (response.statusCode == 200) {
         _celebration = Celebration.fromJson(jsonDecode(response.body));
 

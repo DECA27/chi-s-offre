@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:fides_calendar/authorization/authorization.dart';
 import 'package:fides_calendar/lista_eventi.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -68,10 +71,12 @@ class _OrganizesState extends State<Organizes> {
                     if (this.widget.creating) {
                       response = await http.post(
                           "https://immense-anchorage-57010.herokuapp.com/api/celebration/${this.widget.id}",
+                          headers: { HttpHeaders.authorizationHeader: Authorization.token},
                           body: {'description': _description});
                     } else {
                       response = await http.put(
                           "https://immense-anchorage-57010.herokuapp.com/api/event/${this.widget.id}/description",
+                          headers: { HttpHeaders.authorizationHeader: Authorization.token},
                           body: {'description': _description});
                     }
 
