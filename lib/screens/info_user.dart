@@ -56,9 +56,10 @@ class _InfoUserState extends State<InfoUser> {
   @override
   Widget build(BuildContext context) {
     AppBar appBar = AppBar(
+      centerTitle: true,
       automaticallyImplyLeading: true,
       backgroundColor: Color.fromRGBO(174, 0, 17, 1),
-      title: Center(child: Text('PROFILO', textAlign: TextAlign.start)),
+      title:  Text('PROFILO', textAlign: TextAlign.start),
       elevation: 0,
     );
     var screenHeigth =

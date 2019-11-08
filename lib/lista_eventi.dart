@@ -3,6 +3,7 @@ import 'dart:io';
 //import 'package:camera/camera.dart';
 import 'package:camera/camera.dart';
 import 'package:fides_calendar/authorization/authorization.dart';
+import 'package:fides_calendar/chat.dart';
 import 'package:fides_calendar/login.dart';
 import 'package:fides_calendar/main.dart' as prefix0;
 import 'package:fides_calendar/models/celebration.dart';
@@ -100,19 +101,27 @@ class _ListaEventiState extends State<ListaEventi> {
       );
     } else {
       return Scaffold(
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.message),
+          backgroundColor: Color.fromRGBO(174, 0, 30, 1),
+          onPressed: () {
+            Navigator.push(context,
+                PageTransition(child: Chat(), type: PageTransitionType.fade));
+          },
+        ),
         appBar: AppBar(
             actions: <Widget>[
               GestureDetector(
                 child: Container(
-                  margin: EdgeInsets.all(5),
-                  width: 45,
-                  height: 45,
+                    margin: EdgeInsets.all(5),
+                    width: 45,
+                    height: 45,
                     decoration: BoxDecoration(
-                      shape: BoxShape.circle,
+                        shape: BoxShape.circle,
                         image: DecorationImage(
                             image: NetworkImage(
-                  Authorization.getLoggedUser().profilePicUrl,
-                )))),
+                          Authorization.getLoggedUser().profilePicUrl,
+                        )))),
                 onTap: () {
                   Navigator.push(
                       context,
@@ -125,11 +134,10 @@ class _ListaEventiState extends State<ListaEventi> {
               ),
             ],
             automaticallyImplyLeading: false,
-            title: Center(
-              child: Text(
-                'CALENDAR',
-                style: TextStyle(color: Colors.white),
-              ),
+            centerTitle: true,
+            title: Text(
+              'CALENDAR',
+              style: TextStyle(color: Colors.white),
             ),
             elevation: 0,
             backgroundColor: Color.fromRGBO(174, 0, 30, 1)),

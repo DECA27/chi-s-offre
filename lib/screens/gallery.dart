@@ -33,7 +33,7 @@ class _GalleryState extends State<Gallery> {
       );
     } else {
       return Scaffold(
-      appBar: AppBar(title: Text('GALLERIA'),),
+      appBar: AppBar(title: Text('GALLERIA'),backgroundColor: Color.fromRGBO(174, 0, 30, 1),centerTitle: true,),
       body:Container(
         color: Colors.white,
         child: ListView.builder(
