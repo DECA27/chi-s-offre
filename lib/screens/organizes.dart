@@ -24,11 +24,13 @@ class Organizes extends StatefulWidget {
 
 class _OrganizesState extends State<Organizes> {
   final _formKey = GlobalKey<FormState>();
-
+  Color pinkColor = Color.fromRGBO(237, 18, 81, 1);
+   Color backgroundColor = Color.fromRGBO(235, 237, 241, 1);
   String _description;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: backgroundColor,
       body: SingleChildScrollView(
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -44,7 +46,7 @@ class _OrganizesState extends State<Organizes> {
                   width: 320,
                   height: 400,
                   child: TextFormField(
-                      initialValue: "",
+                    initialValue: "",
                     cursorColor: Colors.black,
                     textInputAction: TextInputAction.newline,
                     keyboardType: TextInputType.multiline,
@@ -64,28 +66,31 @@ class _OrganizesState extends State<Organizes> {
                 ),
               ),
               RaisedButton(
-                  color: Color.fromRGBO(174, 0, 17, 1),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20)),
+                  color: pinkColor,
                   onPressed: () async {
                     _formKey.currentState.save();
                     http.Response response;
-                    if (this.widget.creating) {
-                      response = await http.post(
-                          "https://immense-anchorage-57010.herokuapp.com/api/celebration/${this.widget.id}",
-                          headers: { HttpHeaders.authorizationHeader: Authorization.token},
-                          body: {'description': _description});
-                    } else {
-                      response = await http.put(
-                          "https://immense-anchorage-57010.herokuapp.com/api/event/${this.widget.id}/description",
-                          headers: { HttpHeaders.authorizationHeader: Authorization.token},
-                          body: {'description': _description});
-                    }
+
+                    response = await http.put(
+                        "https://immense-anchorage-57010.herokuapp.com/api/event/${this.widget.id}/description",
+                        headers: {
+                          HttpHeaders.authorizationHeader: Authorization.token
+                        },
+                        body: {
+                          'description': _description
+                        });
 
                     if (response.statusCode == 200) {
                       this.widget.updateDescriptionCallback();
                       Navigator.pop(context, true);
                     }
                   },
-                  child: Text('INVIA DESCRIZIONE'))
+                  child: Text(
+                    'INVIA DESCRIZIONE',
+                    style: TextStyle(color: Colors.white),
+                  ))
             ]),
       ),
     );

@@ -10,11 +10,12 @@ class User {
   String id;
   List<Celebration> celebrations;
   String profilePicKey;
+  bool hasNameDayUpdated;
 
   String profilePicUrl;
 
   User(this.email, this.password, this.firstName, this.lastName, this.id,
-      this.celebrations, this.profilePicKey, this.profilePicUrl);
+      this.celebrations, this.profilePicKey, this.profilePicUrl,this.hasNameDayUpdated);
 
   User.fromJson(Map json)
       : email = json['email'],
@@ -26,7 +27,9 @@ class User {
                 .map((celebrations) => Celebration.fromJson(celebrations))
                 .toList(),
         profilePicKey = json['profilePicKey'],
-        profilePicUrl = json['profilePicUrl'];
+        profilePicUrl = json['profilePicUrl'],
+        hasNameDayUpdated = json['hasNameDayUpdated'];
+        
 
   Map toJson() {
     return {
@@ -36,7 +39,8 @@ class User {
       'password': password,
       'firstName': firstName,
       'lastName': lastName,
-      'celebrations': celebrations
+      'celebrations': celebrations,
+      'hasNameDayUpdated' : hasNameDayUpdated,
     };
   }
 }

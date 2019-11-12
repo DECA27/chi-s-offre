@@ -59,6 +59,8 @@ class CameraScreenState extends State<CameraScreen> {
   Future<void> _initializeControllerFuture;
   File _image;
   bool _isLoading = false;
+  Color backgroundColor = Color.fromRGBO(235, 237, 241, 1);
+  Color pinkColor = Color.fromRGBO(237, 18, 81, 1);
 
   @override
   void initState() {
@@ -120,16 +122,21 @@ class CameraScreenState extends State<CameraScreen> {
             width: 100,
             child: CircularProgressIndicator(
                 backgroundColor: Colors.white,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                    Color.fromRGBO(174, 0, 30, 1)),
+                valueColor: AlwaysStoppedAnimation<Color>(pinkColor),
                 strokeWidth: 5),
           ),
         ),
       );
     } else {
       AppBar appBar = AppBar(
-        title: Text('SCEGLI IMMAGINE'),
-        backgroundColor: Color.fromRGBO(174, 0, 17, 1),
+        automaticallyImplyLeading: false,
+        centerTitle: true,
+        title: Text(
+          'SCEGLI IMMAGINE',
+          style: TextStyle(color: pinkColor, fontWeight: FontWeight.w900),
+        ),
+        backgroundColor: backgroundColor,
+        elevation: 0,
       );
       var screenHeigth =
           MediaQuery.of(context).size.height - appBar.preferredSize.height;
@@ -139,8 +146,10 @@ class CameraScreenState extends State<CameraScreen> {
               color: Colors.blueGrey,
             )
           : Scaffold(
+              backgroundColor: backgroundColor,
               appBar: appBar,
               body: Container(
+                color: backgroundColor,
                 height: screenHeigth / 100 * 90,
                 child: Column(children: <Widget>[
                   Container(
@@ -153,8 +162,8 @@ class CameraScreenState extends State<CameraScreen> {
                                   'SELEZIONA LA TUA IMMAGINE DI PROFILO USANDO LA CAMERA O LA TUA GALLERIA',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                    fontSize: screenHeigth / 100 * 3.5,
-                                  ),
+                                      fontSize: screenHeigth / 100 * 3.5,
+                                      color: pinkColor),
                                 )
                               : Image.file(_image))),
                   _image == null
@@ -165,7 +174,7 @@ class CameraScreenState extends State<CameraScreen> {
                           child: RaisedButton(
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20)),
-                              color: Color.fromRGBO(174, 0, 17, 1),
+                              color: pinkColor,
                               onPressed: () async {
                                 setState(() {
                                   _isLoading = true;
@@ -183,10 +192,9 @@ class CameraScreenState extends State<CameraScreen> {
                                   });
                                   request.send().then((responseStream) async {
                                     if (responseStream.statusCode == 200) {
+                                      var response = await responseStream.stream
+                                          .bytesToString();
                                       if (this.widget.updateToken) {
-                                        var response = await responseStream
-                                            .stream
-                                            .bytesToString();
                                         Authorization.saveToken(response);
                                       }
                                       Navigator.push(
@@ -217,14 +225,14 @@ class CameraScreenState extends State<CameraScreen> {
                         children: <Widget>[
                           FloatingActionButton(
                             heroTag: "btn1",
-                            backgroundColor: Color.fromRGBO(174, 0, 17, 1),
+                            backgroundColor: pinkColor,
                             onPressed: getImageFromGallery,
                             tooltip: 'Pick Image',
                             child: Icon(Icons.wallpaper),
                           ),
                           FloatingActionButton(
                               heroTag: "btr2",
-                              backgroundColor: Color.fromRGBO(174, 0, 17, 1),
+                              backgroundColor: pinkColor,
                               child: Icon(
                                 Icons.camera_alt,
                                 color: Colors.white,

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:fides_calendar/authorization/authorization.dart';
 import 'package:fides_calendar/environment/environment.dart';
+import 'package:fides_calendar/name_day_update.dart';
 import 'package:fides_calendar/screens/camera_screen.dart';
 import 'package:fides_calendar/util/date_format.dart';
 
@@ -24,6 +25,8 @@ class InfoUser extends StatefulWidget {
 class _InfoUserState extends State<InfoUser> {
   bool _isLoading = false;
   User _user;
+  Color backgroundColor = Color.fromRGBO(235, 237, 241, 1);
+  Color pinkColor = Color.fromRGBO(237, 18, 81, 1);
 
   Future<void> _getCelebration() async {
     setState(() {
@@ -61,22 +64,28 @@ class _InfoUserState extends State<InfoUser> {
   Widget build(BuildContext context) {
     AppBar appBar = AppBar(
       centerTitle: true,
-      automaticallyImplyLeading: true,
-      backgroundColor: Color.fromRGBO(174, 0, 17, 1),
-      title: Text('PROFILO', textAlign: TextAlign.start),
+      automaticallyImplyLeading: false,
+      backgroundColor: backgroundColor,
+      title: Text(
+        'PROFILO',
+        textAlign: TextAlign.start,
+        style: TextStyle(color: pinkColor, fontWeight: FontWeight.w900),
+      ),
       elevation: 0,
     );
     var screenHeigth =
         MediaQuery.of(context).size.height - appBar.preferredSize.height;
     var screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
+      backgroundColor: backgroundColor,
         appBar: appBar,
         body: _user == null
             ? null
             : ListView(
                 children: <Widget>[
                   Container(
-                    height: screenHeigth / 100 * 90,
+                    color: backgroundColor,
+                    height: screenHeigth/100*95,
                     child: Column(
                       children: <Widget>[
                         GestureDetector(
@@ -101,7 +110,6 @@ class _InfoUserState extends State<InfoUser> {
                             decoration: BoxDecoration(
                                 image: DecorationImage(
                                     image: NetworkImage(_user.profilePicUrl)),
-                                color: Colors.white,
                                 shape: BoxShape.circle),
                           ),
                         ),
@@ -135,8 +143,27 @@ class _InfoUserState extends State<InfoUser> {
                                 ? '${_user.celebrations[1].celebrationType}: ${DateTime.parse(_user.celebrations[1].date).day} ${DateFormat.numberToString(DateTime.parse(_user.celebrations[1].date).month)}'
                                 : 'Nessuno onomastico trovato',
                             style: TextStyle(fontSize: 20),
+                            textAlign: TextAlign.center,
                           ),
                         ),
+                        _user.hasNameDayUpdated
+                            ? Container()
+                            : Container(
+                                margin: EdgeInsets.symmetric(
+                                    horizontal: screenWidth / 100 * 2,
+                                    vertical: screenHeigth / 100 * 0.1),
+                                child: RaisedButton(
+                                    child: Text('Modifica il tuo onomastico'),
+                                    elevation: 0,
+                                    color: Colors.white10,
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          PageTransition(
+                                              child: NameDayUpdate(),
+                                              type: PageTransitionType.fade));
+                                    }),
+                              ),
                         Expanded(
                           child: Align(
                             alignment: Alignment.bottomCenter,
@@ -148,7 +175,7 @@ class _InfoUserState extends State<InfoUser> {
                               child: Material(
                                 elevation: 5.0,
                                 borderRadius: BorderRadius.circular(30.0),
-                                color: Color.fromRGBO(174, 0, 17, 1),
+                                color: pinkColor,
                                 child: MaterialButton(
                                   minWidth: MediaQuery.of(context).size.width,
                                   onPressed: () {
@@ -162,6 +189,7 @@ class _InfoUserState extends State<InfoUser> {
                                   child: Text(
                                     "LOGOUT",
                                     textAlign: TextAlign.center,
+                                    style: TextStyle(color: Colors.white),
                                   ),
                                 ),
                               ),
@@ -170,7 +198,6 @@ class _InfoUserState extends State<InfoUser> {
                         ),
                       ],
                     ),
-                    decoration: BoxDecoration(),
                   ),
                 ],
               ));

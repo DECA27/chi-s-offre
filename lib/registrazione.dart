@@ -43,6 +43,8 @@ class _RegistrazioneState extends State<Registrazione> {
   bool showDay = false;
   final _formKey = GlobalKey<FormState>();
   String _errorsMessage = '';
+  Color backgroundColor = Color.fromRGBO(235, 237, 241, 1);
+  Color pinkColor = Color.fromRGBO(237, 18, 81, 1);
 
   Future<Iterable> _saveUser(Map user) async {
     Iterable errors = [];
@@ -81,20 +83,22 @@ class _RegistrazioneState extends State<Registrazione> {
             width: 100,
             child: CircularProgressIndicator(
                 backgroundColor: Colors.white,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                    Color.fromRGBO(174, 0, 30, 1)),
+                valueColor: AlwaysStoppedAnimation<Color>(pinkColor),
                 strokeWidth: 5),
           ),
         ),
       );
     } else {
       AppBar appBar = AppBar(
+          centerTitle: true,
+          automaticallyImplyLeading: false,
           title: Center(
               child: Text(
             'REGISTRAZIONE',
             textAlign: TextAlign.center,
+            style: TextStyle(fontWeight: FontWeight.w900, color: pinkColor),
           )),
-          backgroundColor: Color.fromRGBO(174, 0, 17, 1),
+          backgroundColor: backgroundColor,
           elevation: 0,
           actions: <Widget>[
             Align(
@@ -107,12 +111,13 @@ class _RegistrazioneState extends State<Registrazione> {
       double _offset = screenWidth / 100 * 5;
 
       return Scaffold(
+        backgroundColor: backgroundColor,
         appBar: appBar,
         body: ListView(
           children: <Widget>[
             Container(
               width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
+              height: MediaQuery.of(context).size.height/100*90,
               child: Form(
                 key: _formKey,
                 child: Column(
@@ -136,7 +141,7 @@ class _RegistrazioneState extends State<Registrazione> {
                       child: TextFormField(
                         style: TextStyle(fontSize: screenHeigth / 100 * 2.5),
                         initialValue: "",
-                        cursorColor: Colors.black,
+                        cursorColor: pinkColor,
                         validator: (value) {
                           if (value.isEmpty) {
                             return 'CAMPO OBBLIGATORIO';
@@ -146,15 +151,20 @@ class _RegistrazioneState extends State<Registrazione> {
                         obscureText: false,
                         decoration: InputDecoration(
                           focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(32.0),
-                              borderSide: BorderSide(color: Colors.black)),
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(color: pinkColor)),
                           contentPadding: EdgeInsets.symmetric(
                               horizontal: screenWidth / 100 * 5,
                               vertical: screenHeigth / 100 * 2),
                           hintText: "Nome",
+                          errorText: 'Inserisci il tuo nome',
+                          errorStyle: TextStyle(color: pinkColor),
+                          errorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: pinkColor)),
+                          focusColor: pinkColor,
                           border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.transparent),
-                              borderRadius: BorderRadius.circular(32.0)),
+                              borderSide: BorderSide(color: pinkColor),
+                              borderRadius: BorderRadius.circular(10)),
                         ),
                         onSaved: (val) => setState(() {
                           userData.firstName = val;
@@ -168,7 +178,7 @@ class _RegistrazioneState extends State<Registrazione> {
                       child: TextFormField(
                           style: TextStyle(fontSize: screenHeigth / 100 * 2.5),
                           initialValue: "",
-                          cursorColor: Colors.black,
+                          cursorColor: pinkColor,
                           validator: (value) {
                             if (value.isEmpty) {
                               return 'CAMPO OBBLIGATORIO';
@@ -178,14 +188,20 @@ class _RegistrazioneState extends State<Registrazione> {
                           obscureText: false,
                           decoration: InputDecoration(
                               focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(32.0),
-                                  borderSide: BorderSide(color: Colors.black)),
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(color: pinkColor)),
                               contentPadding: EdgeInsets.symmetric(
                                   horizontal: screenWidth / 100 * 5,
                                   vertical: screenHeigth / 100 * 2),
                               hintText: "Cognome",
+                              errorText: 'Inserisci il tuo cognome',
+                              errorStyle: TextStyle(color: pinkColor),
+                              errorBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: pinkColor)),
+                              focusColor: pinkColor,
                               border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(32.0))),
+                                  borderSide: BorderSide(color: pinkColor),
+                                  borderRadius: BorderRadius.circular(10))),
                           onSaved: (val) => setState(() {
                                 userData.lastName = val;
                               })),
@@ -196,12 +212,14 @@ class _RegistrazioneState extends State<Registrazione> {
                       child: Text(
                         'Mese di nascita',
                         textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: screenHeigth / 100 * 2.5),
+                        style: TextStyle(
+                            fontSize: screenHeigth / 100 * 2.5,
+                            color: pinkColor),
                       ),
                     ),
                     Slider(
-                      inactiveColor: Colors.black38,
-                      activeColor: Colors.black,
+                      inactiveColor: pinkColor,
+                      activeColor: pinkColor,
                       min: 1,
                       max: 12,
                       label: _month.round().toString(),
@@ -224,12 +242,14 @@ class _RegistrazioneState extends State<Registrazione> {
                       child: Text(
                         'Giorno di nascita',
                         textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: screenHeigth / 100 * 2.5),
+                        style: TextStyle(
+                            fontSize: screenHeigth / 100 * 2.5,
+                            color: pinkColor),
                       ),
                     ),
                     Slider(
-                        inactiveColor: Colors.black38,
-                        activeColor: Colors.black,
+                        inactiveColor: pinkColor,
+                        activeColor: pinkColor,
                         label: _day.round().toString(),
                         divisions: 200,
                         min: 1,
@@ -247,7 +267,7 @@ class _RegistrazioneState extends State<Registrazione> {
                       child: TextFormField(
                           style: TextStyle(fontSize: screenHeigth / 100 * 2.5),
                           initialValue: "",
-                          cursorColor: Colors.black,
+                          cursorColor: pinkColor,
                           validator: (value) {
                             if (value.isEmpty) {
                               return 'CAMPO OBBLIGATORIO';
@@ -261,14 +281,20 @@ class _RegistrazioneState extends State<Registrazione> {
                           obscureText: false,
                           decoration: InputDecoration(
                               focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(32.0),
+                                  borderRadius: BorderRadius.circular(10.0),
                                   borderSide: BorderSide(color: Colors.black)),
                               contentPadding: EdgeInsets.symmetric(
                                   horizontal: screenWidth / 100 * 5,
                                   vertical: screenHeigth / 100 * 2),
                               hintText: "Email",
+                               errorText: 'Inserisci una email',
+                          errorStyle: TextStyle(color: pinkColor),
+                          errorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: pinkColor)),
+                          focusColor: pinkColor,
                               border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(32.0))),
+                                borderSide: BorderSide(color: pinkColor),
+                                  borderRadius: BorderRadius.circular(10.0))),
                           onSaved: (val) => setState(() {
                                 userData.email = val;
                               })),
@@ -280,7 +306,7 @@ class _RegistrazioneState extends State<Registrazione> {
                       child: TextFormField(
                           style: TextStyle(fontSize: screenHeigth / 100 * 2.5),
                           initialValue: "",
-                          cursorColor: Colors.black,
+                          cursorColor: pinkColor,
                           validator: (value) {
                             if (value.isEmpty) {
                               return 'CAMPO OBBLIGATORIO';
@@ -295,14 +321,19 @@ class _RegistrazioneState extends State<Registrazione> {
                           obscureText: true,
                           decoration: InputDecoration(
                               focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(32.0),
+                                  borderRadius: BorderRadius.circular(10.0),
                                   borderSide: BorderSide(color: Colors.black)),
                               contentPadding: EdgeInsets.symmetric(
                                   horizontal: screenWidth / 100 * 5,
                                   vertical: screenHeigth / 100 * 2),
                               hintText: "Password",
+                               errorText: 'Inserisci una password',
+                          errorStyle: TextStyle(color: pinkColor),
+                          errorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: pinkColor)),
+                          focusColor: pinkColor,
                               border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(32.0))),
+                                  borderRadius: BorderRadius.circular(10.0))),
                           onSaved: (val) => setState(() {
                                 userData.password = val;
                               })),
@@ -314,11 +345,7 @@ class _RegistrazioneState extends State<Registrazione> {
                               left: _offset,
                               right: _offset,
                               bottom: screenHeigth / 100 * 2),
-                          child: Material(
-                            elevation: 5.0,
-                            borderRadius: BorderRadius.circular(30.0),
-                            color: Color.fromRGBO(174, 0, 17, 1),
-                            child: MaterialButton(
+                          child: MaterialButton(
                               minWidth: MediaQuery.of(context).size.width,
                               onPressed: () {
                                 setState(() {
@@ -367,12 +394,11 @@ class _RegistrazioneState extends State<Registrazione> {
                                   });
                                 }
                               },
-                              child: Text(
-                                "PROCEDI",
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
+                              child: Icon(
+                                Icons.check_circle,
+                                color: pinkColor,
+                                size: 60,
+                              )),
                         ),
                       ),
                     ),

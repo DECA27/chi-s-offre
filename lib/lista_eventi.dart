@@ -13,6 +13,7 @@ import 'package:fides_calendar/screens/camera_screen.dart';
 import 'package:fides_calendar/screens/info_page.dart';
 import 'package:fides_calendar/screens/info_user.dart';
 import 'package:fides_calendar/util/date_format.dart';
+import 'package:fides_calendar/util/loader.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -82,134 +83,141 @@ class _ListaEventiState extends State<ListaEventi> {
 
   @override
   Widget build(BuildContext context) {
+    var screenHeigth = MediaQuery.of(context).size.height;
+    var screenWidth = MediaQuery.of(context).size.width;
+    Color backgroundColor = Color.fromRGBO(235, 237, 241, 1);
+    Color pinkColor = Color.fromRGBO(237, 18, 81, 1);
     if (_isLoading) {
-      return Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        color: Colors.white,
-        child: Center(
-          child: SizedBox(
-            height: 100,
-            width: 100,
-            child: CircularProgressIndicator(
-                backgroundColor: Colors.white,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                    Color.fromRGBO(174, 0, 30, 1)),
-                strokeWidth: 5),
-          ),
-        ),
-      );
+      return Loader.getLoader(context);
     } else {
       return Scaffold(
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.message),
-          backgroundColor: Color.fromRGBO(174, 0, 30, 1),
-          onPressed: () {
-            Navigator.push(context,
-                PageTransition(child: Chat(), type: PageTransitionType.fade));
-          },
-        ),
-        appBar: AppBar(
-            actions: <Widget>[
-              GestureDetector(
-                child: Container(
-                    margin: EdgeInsets.all(5),
-                    width: 45,
-                    height: 45,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                            image: NetworkImage(
-                          Authorization.getLoggedUser().profilePicUrl,
-                        )))),
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      PageTransition(
-                          child: InfoUser(
-                            userId: Authorization.getLoggedUser().id,
-                          ),
-                          type: PageTransitionType.fade));
-                },
+          appBar: AppBar(
+              actions: <Widget>[
+                GestureDetector(
+                  child: Container(
+                      margin: EdgeInsets.all(5),
+                      width: 45,
+                      height: 45,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                              image: NetworkImage(
+                            Authorization.getLoggedUser().profilePicUrl,
+                          )))),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        PageTransition(
+                            child: InfoUser(
+                              userId: Authorization.getLoggedUser().id,
+                            ),
+                            type: PageTransitionType.fade));
+                  },
+                ),
+              ],
+              automaticallyImplyLeading: false,
+              centerTitle: true,
+              title: Text(
+                'CHI (S)OFFRE?',
+                style: TextStyle(
+                    color: pinkColor,
+                    fontWeight: FontWeight.w900,
+                    fontSize: 22),
               ),
-            ],
-            automaticallyImplyLeading: false,
-            centerTitle: true,
-            title: Text(
-              'CALENDAR',
-              style: TextStyle(color: Colors.white),
-            ),
-            elevation: 0,
-            backgroundColor: Color.fromRGBO(174, 0, 30, 1)),
-        body: Container(
-          decoration: BoxDecoration(color: Colors.white),
-          child: Timeline.builder(
-              itemBuilder: (context, i) {
-                return TimelineModel(
-                    Container(
-                        color: Colors.transparent,
-                        width: MediaQuery.of(context).size.width,
-                        height: 180,
-                        child: Container(
-                          width: 100,
-                          height: 100,
-                          child: Row(
-                            children: <Widget>[
-                              Expanded(
-                                flex: 1,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        PageTransition(
-                                            child: InfoPage(
-                                              celebrationId:
-                                                  _celebrations[i].id,
-                                              camera: <CameraDescription>[],
+              elevation: 0,
+              backgroundColor: backgroundColor),
+          body: Container(
+              decoration: BoxDecoration(color: backgroundColor),
+              child: ListView.builder(
+                  itemCount: _celebrations.length,
+                  physics: BouncingScrollPhysics(),
+                  itemBuilder: (context, i) {
+                    return Container(
+                      decoration: BoxDecoration(
+                          boxShadow: <BoxShadow>[
+                            BoxShadow(
+                                offset: Offset(0, 4),
+                                color: Colors.grey,
+                                blurRadius: 1)
+                          ],
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(20),
+                            bottomRight: Radius.circular(20),
+                            topRight: Radius.circular(20),
+                          )),
+                      margin: EdgeInsets.symmetric(
+                          vertical: screenHeigth / 100 * 2,
+                          horizontal: screenWidth / 100 * 10),
+                      width: MediaQuery.of(context).size.width,
+                      height: screenHeigth / 100 * 14,
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                            flex: 1,
+                            child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      PageTransition(
+                                          child: InfoPage(
+                                            celebrationId: _celebrations[i].id,
+                                            camera: <CameraDescription>[],
+                                          ),
+                                          type: PageTransitionType.fade));
+                                },
+                                child: Row(
+                                  children: <Widget>[
+                                    Expanded(
+                                      child: Container(
+                                        color: Colors.transparent,
+                                        padding: EdgeInsets.only(
+                                            right: screenWidth / 100 * 2,
+                                            left: screenWidth / 100 * 2,
+                                            top: screenHeigth / 100 * 3,
+                                            bottom: 0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Text(
+                                              '${DateTime.parse(_celebrations[i].date).day} ${DateFormat.numberToString(DateTime.parse(_celebrations[i].date).month)}',
+                                              style: TextStyle(
+                                                  fontSize: 13,
+                                                  fontWeight: FontWeight.w900),
                                             ),
-                                            type: PageTransitionType.fade));
-                                  },
-                                  child: Container(
-                                      margin: EdgeInsets.only(
-                                          top: 20, left: 20, right: 0),
-                                      width: MediaQuery.of(context).size.width,
-                                      height: 100,
-                                      child: Align(
-                                        alignment: Alignment.center,
-                                        child: Text(
-                                          "${_celebrations[i].celebrationType[0].toUpperCase()}${_celebrations[i].celebrationType.substring(1)} di:\n" +
-                                              "${_celebrations[i].celebrated.firstName} ${_celebrations[i].celebrated.lastName}",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 25,
-                                              color: Colors.white),
+                                            Text(
+                                                '${_celebrations[i].celebrated.firstName.toUpperCase()} ${_celebrations[i].celebrated.lastName.toUpperCase()}',
+                                                style: TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.w900,
+                                                    color: pinkColor)),
+                                            Text(
+                                              '${_celebrations[i].celebrationType.toUpperCase()}',
+                                              style: TextStyle(
+                                                  fontSize: 13,
+                                                  fontWeight: FontWeight.w900),
+                                            )
+                                          ],
                                         ),
                                       ),
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.only(
-                                            bottomRight: Radius.circular(20.0),
-                                            topRight: Radius.circular(20.0),
-                                            topLeft: Radius.circular(20.0),
-                                            bottomLeft: Radius.circular(20.0),
-                                          ),
-                                          color:
-                                              Color.fromRGBO(174, 0, 30, 1))),
-                                ),
-                              )
-                            ],
-                          ),
-                        )),
-                    iconBackground: Colors.transparent,
-                    dateString:
-                        "${DateTime.parse(_celebrations[i].date).day.toString()}\n${DateFormat.numberToString(DateTime.parse(_celebrations[i].date).month)}");
-              },
-              position: TimelinePosition.Left,
-              itemCount: _celebrations.length,
-              physics: BouncingScrollPhysics(),
-              lineColor: Color.fromRGBO(174, 0, 30, 1)),
-        ),
-      );
+                                    ),
+                                    Container(
+                                      height: screenHeigth,
+                                      color: Colors.transparent,
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: screenWidth / 100 * 5,
+                                      ),
+                                      child: Icon(Icons.navigate_next,
+                                          color: pinkColor),
+                                    )
+                                  ],
+                                )),
+                          )
+                        ],
+                      ),
+                    );
+                  })));
     }
   }
 }

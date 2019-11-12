@@ -11,19 +11,25 @@ import 'package:flutter/cupertino.dart';
 class SecondPage extends StatefulWidget {
   @override
   _SecondPageState createState() => _SecondPageState();
+  Color backgroundColor = Color.fromRGBO(235, 237, 241, 1);
+  Color pinkColor = Color.fromRGBO(237, 18, 81, 1);
 }
 
 class _SecondPageState extends State<SecondPage> {
+  Color backgroundColor = Color.fromRGBO(235, 237, 241, 1);
+  Color pinkColor = Color.fromRGBO(237, 18, 81, 1);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).pushNamedAndRemoveUntil(
               '/events', (Route<dynamic> route) => false);
         },
         backgroundColor: Colors.transparent,
-        child: Text('SALTA'),
+        child: Text('SALTA',style: TextStyle(color: pinkColor,fontWeight: FontWeight.w900),),
         elevation: 0,
       ),
       body: Container(
@@ -59,18 +65,14 @@ class _SecondPageState extends State<SecondPage> {
               ]),
               Text(
                 'Aggiungi qui la tua foto',
-                style: TextStyle(color: Colors.white, fontSize: 20),
+                style: TextStyle(color: pinkColor, fontSize: 20,fontWeight: FontWeight.w700),
               )
             ],
           ),
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
-          decoration: BoxDecoration(
-              color: Color.fromRGBO(174, 0, 17, 1),
-              image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: NetworkImage(
-                      "https://static.iphoneitalia.com/wp-content/uploads/2014/03/iPhone-3G3GS-22.jpg")))),
+          color: backgroundColor,
+      ),
     );
   }
 }

@@ -10,7 +10,6 @@ import 'package:page_transition/page_transition.dart';
 import 'package:path/path.dart' as prefix0;
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 class Login extends StatefulWidget {
   @override
   _LoginState createState() => _LoginState();
@@ -23,9 +22,13 @@ class _LoginState extends State<Login> {
   get style => null;
   bool _incorrectCredentials = false;
   bool _isLoading = false;
-
+  int tapCounter = 0;
+  Color backgroundColor = Color.fromRGBO(235, 237, 241, 1);
+  Color pinkColor = Color.fromRGBO(237, 18, 81, 1);
+  bool passwordVisible;
   @override
   void initState() {
+    passwordVisible = false;
     super.initState();
 
     SchedulerBinding.instance.addPostFrameCallback((_) async {
@@ -60,7 +63,7 @@ class _LoginState extends State<Login> {
             child: CircularProgressIndicator(
                 backgroundColor: Colors.white,
                 valueColor: AlwaysStoppedAnimation<Color>(
-                    Color.fromRGBO(174, 0, 30, 1)),
+                    pinkColor),
                 strokeWidth: 5),
           ),
         ),
@@ -69,32 +72,60 @@ class _LoginState extends State<Login> {
       return Scaffold(
           body: Container(
               height: MediaQuery.of(context).size.height / 100 * 100,
-              color: Colors.white,
+              color: backgroundColor,
               child: Form(
                   key: _formKey,
                   child: ListView(children: <Widget>[
                     Center(
                         child: Column(children: <Widget>[
-                      Container(
-                        margin: EdgeInsets.only(top: screenHeigth / 100 * 4),
-                        child: SizedBox(
-                          width: screenWidth / 100 * 50,
-                          child: Image.asset(
-                            "assets/images/Asset 2.png",
-                            fit: BoxFit.contain,
+                      GestureDetector(
+                        onTap: () {
+                          if (tapCounter > 5) {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: Text('App sviluppata da:',
+                                        textAlign: TextAlign.center),
+                                    content: Text(
+                                        "  -De Cataldo Biagio\n  -Barbaro Giovanni\n  -Caruso Luigi"),
+                                    actions: <Widget>[
+                                      FlatButton(
+                                        child: Text(
+                                          'Ok',
+                                          style: TextStyle(color: Colors.black),
+                                        ),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      )
+                                    ],
+                                  );
+                                });
+                          }
+                          tapCounter++;
+                        },
+                        child: Container(
+                          margin: EdgeInsets.only(top: screenHeigth / 100 * 4),
+                          child: SizedBox(
+                            width: screenWidth / 100 * 50,
+                            child: Image.asset(
+                              "assets/images/Asset 15.png",
+                              fit: BoxFit.contain,
+                            ),
                           ),
                         ),
                       ),
                       Container(
                         margin: EdgeInsets.only(
-                            top: MediaQuery.of(context).size.height / 100 * 5,
+                            top: MediaQuery.of(context).size.height / 100 * 6,
                             left: MediaQuery.of(context).size.width / 100 * 8,
                             right: MediaQuery.of(context).size.width / 100 * 8,
                             bottom:
                                 MediaQuery.of(context).size.height / 100 * 2.5),
                         child: TextFormField(
                           initialValue: "",
-                          cursorColor: Colors.black,
+                          cursorColor: pinkColor,
                           validator: (value) {
                             if (value.isEmpty) {
                               return 'CAMPO OBBLIGATORIO';
@@ -104,13 +135,19 @@ class _LoginState extends State<Login> {
                           obscureText: false,
                           decoration: InputDecoration(
                             focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(32.0),
-                                borderSide: BorderSide(color: Colors.black)),
+                                borderRadius: BorderRadius.circular(10.0),
+                                borderSide: BorderSide(color: pinkColor)),
                             contentPadding:
                                 EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                            errorText: 'Inserisci la tua email',
                             hintText: "Email",
+                            hintStyle: TextStyle(color: pinkColor),
+                            focusColor: pinkColor,
+                             errorStyle: TextStyle(color: pinkColor),
+                          errorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: pinkColor)),
                             border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(32.0)),
+                                borderRadius: BorderRadius.circular(10.0)),
                           ),
                           onSaved: (val) => setState(() {
                             _email = val;
@@ -119,31 +156,47 @@ class _LoginState extends State<Login> {
                       ),
                       Container(
                         margin: EdgeInsets.only(
-                            top: MediaQuery.of(context).size.height / 100,
+                            top: MediaQuery.of(context).size.height / 100 / 2,
                             left: MediaQuery.of(context).size.width / 100 * 8,
                             right: MediaQuery.of(context).size.width / 100 * 8,
                             bottom:
                                 MediaQuery.of(context).size.height / 100 * 2.5),
                         child: TextFormField(
                             initialValue: "",
-                            cursorColor: Colors.black,
+                            cursorColor: pinkColor,
                             validator: (value) {
                               if (value.isEmpty) {
                                 return 'CAMPO OBBLIGATORIO';
                               }
                               return null;
                             },
-                            obscureText: true,
+                            obscureText: passwordVisible,
                             decoration: InputDecoration(
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    passwordVisible
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
+                                    color: pinkColor,
+                                  ),
+                                  onPressed: () {
+                                    passwordVisible = !passwordVisible;
+                                  },
+                                ),
                                 focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(32.0),
-                                    borderSide:
-                                        BorderSide(color: Colors.black)),
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    borderSide: BorderSide(color: pinkColor)),
                                 contentPadding:
                                     EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                                errorText: 'Inserisci la tua password',
                                 hintText: "Password",
+                                hintStyle: TextStyle(color: pinkColor),
+                                 errorStyle: TextStyle(color: pinkColor),
+                          errorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: pinkColor)),
                                 border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(32.0))),
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    borderSide: BorderSide(color: pinkColor))),
                             onSaved: (val) => setState(() {
                                   _password = val;
                                 })),
@@ -158,17 +211,13 @@ class _LoginState extends State<Login> {
                               : null),
                       Container(
                         margin: EdgeInsets.only(
-                            top: MediaQuery.of(context).size.height / 100 * 5,
+                            top: MediaQuery.of(context).size.height / 100 * 2,
                             left: MediaQuery.of(context).size.width / 100 * 8,
                             right: MediaQuery.of(context).size.width / 100 * 8,
                             bottom:
-                                MediaQuery.of(context).size.height / 100 * 2.5),
-                        child: Material(
-                          elevation: 5.0,
-                          borderRadius: BorderRadius.circular(30.0),
-                          color: Color.fromRGBO(174, 0, 17, 1),
-                          child: MaterialButton(
-                            minWidth: MediaQuery.of(context).size.width,
+                                MediaQuery.of(context).size.height / 100 * 0.1),
+                        child: MaterialButton(
+                            minWidth: MediaQuery.of(context).size.width / 4,
                             padding:
                                 EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                             onPressed: () {
@@ -187,22 +236,21 @@ class _LoginState extends State<Login> {
                                 });
                               }
                             },
-                            child: Text(
-                              "LOGIN",
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
+                            child: Icon(
+                              Icons.check_circle,
+                              color: pinkColor,
+                              size: 60,
+                            )),
                       ),
                       Container(
                           margin: EdgeInsets.symmetric(
-                              vertical: screenHeigth / 100 * 5,
+                              vertical: screenHeigth / 100 * 3,
                               horizontal: screenWidth / 100),
                           child: Text('Non sei registrato?')),
                       RaisedButton(
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20)),
-                          color: Color.fromRGBO(174, 0, 17, 1),
+                          color: pinkColor,
                           onPressed: () {
                             Navigator.push(
                                 context,
@@ -210,7 +258,10 @@ class _LoginState extends State<Login> {
                                     child: Registrazione(),
                                     type: PageTransitionType.fade));
                           },
-                          child: Text('REGISTRATI'))
+                          child: Text(
+                            'REGISTRATI',
+                            style: TextStyle(color: Colors.white),
+                          ))
                     ]))
                   ]))));
     }

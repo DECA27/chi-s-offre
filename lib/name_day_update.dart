@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:fides_calendar/environment/environment.dart';
 import 'package:fides_calendar/registrazione.dart';
 import 'package:fides_calendar/util/days_month.dart';
@@ -8,12 +9,12 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'authorization/authorization.dart';
 
-class NameDay extends StatefulWidget {
+class NameDayUpdate extends StatefulWidget {
   @override
   _NameDayState createState() => _NameDayState();
 }
 
-class _NameDayState extends State<NameDay> {
+class _NameDayState extends State<NameDayUpdate> {
   int _day = 1;
   int _month = 1;
   bool showDay = false;
@@ -24,27 +25,27 @@ class _NameDayState extends State<NameDay> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: backgroundColor,
+      backgroundColor: backgroundColor,
+        appBar: AppBar(
+          elevation: 0,
+          automaticallyImplyLeading: false,
+          title: Text('AGGIORNA ONOMASTICO',style: TextStyle(fontWeight: FontWeight.w900,color: pinkColor),),
+          centerTitle: true,
+          backgroundColor: backgroundColor,
+        ),
         body: Form(
           key: _formKey,
           child: Column(
             children: <Widget>[
               Container(
-                margin: EdgeInsets.only(top: 60),
-                child: SizedBox(
-                  width: 100,
-                  child: Image.network(
-                      'https://i.pinimg.com/originals/a0/29/93/a029936b63331ee16b0c4e360961cd09.jpg'),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(top: 40),
+                margin: EdgeInsets.only(
+                    top: MediaQuery.of(context).size.height / 100 * 5),
                 child: Text(
-                  'OPS IL TUO ONOMASTICO NON È STATO GENERATO',
+                  'CAMBIA IL TUO ONOMASTICO\nATTENZIONE!\nHai solo un tentativo',
                   style: TextStyle(
                       color: Colors.black,
                       fontSize: 20,
-                      fontWeight: FontWeight.w900),
+                      fontWeight: FontWeight.w500),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -120,7 +121,7 @@ class _NameDayState extends State<NameDay> {
                       }
                     },
                     child: Text(
-                      "AGGIUNGI ONOMASTICO",
+                      "AGGIORNA ONOMASTICO",
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.white),
                     ),

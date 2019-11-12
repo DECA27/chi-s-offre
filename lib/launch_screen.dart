@@ -1,17 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class FirstPage extends StatefulWidget {
+class LaunchScreen extends StatefulWidget {
   @override
-  _FirstPageState createState() => _FirstPageState();
+  _LaunchScreen createState() => _LaunchScreen();
 }
 
-class _FirstPageState extends State<FirstPage> {
+class _LaunchScreen extends State<LaunchScreen> {
   @override
   void initState() {
     Future.delayed(Duration(seconds: 2), () {
       Navigator.pushNamedAndRemoveUntil(
-          context, '/login', (Route<dynamic> route) => false);
+          context, '/innovation lab', (Route<dynamic> route) => false);
     });
     super.initState();
   }
@@ -22,7 +22,7 @@ class _FirstPageState extends State<FirstPage> {
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         child: Image.asset(
-          "assets/images/Asset 3.png",
+          "assets/images/launch screen - Copia.png",
           fit: BoxFit.fill,
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:fides_calendar/authorization/authorization.dart';
@@ -121,7 +122,8 @@ class ChatWindow extends State<Chat> with TickerProviderStateMixin {
   }
 
   Future<void> getChat() async {
-    http.Response response = await http.get('${Environment.siteUrl}/chat');
+    http.Response response = await http.get('${Environment.siteUrl}/chat',
+    headers: {HttpHeaders.authorizationHeader: Authorization.token} );
     Iterable json = jsonDecode(response.body);
     _messages = json
         .map((message) => Msg(

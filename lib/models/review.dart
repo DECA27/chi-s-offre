@@ -7,7 +7,7 @@ import 'package:json_annotation/json_annotation.dart';
 class Review {
   String comment;
   String reviewer;
-  Float rating;
+  num rating;
 
   Review(this.comment, this.reviewer, this.rating);
 

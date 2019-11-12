@@ -37,6 +37,7 @@ dependencies:
   flutter_screenutil: ^0.6.0
   shared_preferences: ^0.4.3
   socket_io_client: ^0.9.5
+  flutter_rating_bar: ^1.1.0
  
 
 
@@ -52,7 +53,7 @@ dev_dependencies:
 
 
 flutter_icons:
-  image_path: "assets/images/Asset 2.png"
+  image_path: "assets/images/Asset 11.png"
   android: "launcher_icons" 
   ios: true
 
@@ -77,9 +78,11 @@ flutter_icons:
 flutter:
   uses-material-design: true
   assets: 
-    - assets/images/Asset 2.png
-    - assets/images/Asset 5.png
+    - assets/images/Asset 15.png
+    - assets/images/Asset 3.png
     - assets/images/Untitled-1.png
+    - assets/images/innovation lab - Copia.png
+    - assets/images/launch screen - Copia.png
      
  
   # An image asset can refer to one or more resolution-specific "variants", see
