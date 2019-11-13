@@ -25,7 +25,7 @@ class Organizes extends StatefulWidget {
 class _OrganizesState extends State<Organizes> {
   final _formKey = GlobalKey<FormState>();
   Color pinkColor = Color.fromRGBO(237, 18, 81, 1);
-   Color backgroundColor = Color.fromRGBO(235, 237, 241, 1);
+  Color backgroundColor = Color.fromRGBO(235, 237, 241, 1);
   String _description;
   @override
   Widget build(BuildContext context) {

@@ -117,7 +117,7 @@ class _RegistrazioneState extends State<Registrazione> {
           children: <Widget>[
             Container(
               width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height/100*90,
+              height: MediaQuery.of(context).size.height / 100 * 90,
               child: Form(
                 key: _formKey,
                 child: Column(
@@ -287,13 +287,13 @@ class _RegistrazioneState extends State<Registrazione> {
                                   horizontal: screenWidth / 100 * 5,
                                   vertical: screenHeigth / 100 * 2),
                               hintText: "Email",
-                               errorText: 'Inserisci una email',
-                          errorStyle: TextStyle(color: pinkColor),
-                          errorBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: pinkColor)),
-                          focusColor: pinkColor,
+                              errorText: 'Inserisci una email',
+                              errorStyle: TextStyle(color: pinkColor),
+                              errorBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: pinkColor)),
+                              focusColor: pinkColor,
                               border: OutlineInputBorder(
-                                borderSide: BorderSide(color: pinkColor),
+                                  borderSide: BorderSide(color: pinkColor),
                                   borderRadius: BorderRadius.circular(10.0))),
                           onSaved: (val) => setState(() {
                                 userData.email = val;
@@ -327,11 +327,11 @@ class _RegistrazioneState extends State<Registrazione> {
                                   horizontal: screenWidth / 100 * 5,
                                   vertical: screenHeigth / 100 * 2),
                               hintText: "Password",
-                               errorText: 'Inserisci una password',
-                          errorStyle: TextStyle(color: pinkColor),
-                          errorBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: pinkColor)),
-                          focusColor: pinkColor,
+                              errorText: 'Inserisci una password',
+                              errorStyle: TextStyle(color: pinkColor),
+                              errorBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: pinkColor)),
+                              focusColor: pinkColor,
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10.0))),
                           onSaved: (val) => setState(() {

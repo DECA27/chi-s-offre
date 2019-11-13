@@ -13,7 +13,7 @@ class Celebration {
   List<Event> linkedEvents;
   Event activeEvent;
 
-  Celebration(this.id, this.celebrationType, this.date, this.celebrated,
+  Celebration(this.id, this.celebrationType,this.date, this.celebrated,
       this.linkedEvents, this.activeEvent);
 
   Celebration.fromJson(Map json)

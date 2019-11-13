@@ -6,14 +6,14 @@ import 'package:json_annotation/json_annotation.dart';
 @JsonSerializable(nullable: true)
 class Review {
   String comment;
-  String reviewer;
+  User reviewer;
   num rating;
 
   Review(this.comment, this.reviewer, this.rating);
 
   Review.fromJson(Map json)
       : comment = json['comment'],
-        reviewer = json['reviewer'],
+        reviewer = User.fromJson(json['reviewer']),
         rating = json['rating'];
 
   Map toJson() {

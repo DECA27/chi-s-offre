@@ -5,6 +5,8 @@ import 'package:camera/camera.dart';
 import 'package:fides_calendar/authorization/authorization.dart';
 import 'package:fides_calendar/environment/environment.dart';
 import 'package:fides_calendar/models/celebration.dart';
+import 'package:fides_calendar/models/event.dart';
+import 'package:fides_calendar/models/review.dart';
 import 'package:fides_calendar/reviews.dart';
 import 'package:fides_calendar/screens/camera_screen.dart';
 import 'package:fides_calendar/screens/gallery.dart';
@@ -21,13 +23,13 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 
 class InfoPage extends StatefulWidget {
-  final celebrationId;
+  final eventId;
   final List<String> imageUrls;
 
   // final List<CameraDescription> cameras;
   const InfoPage(
       {Key key,
-      @required this.celebrationId,
+      @required this.eventId,
       List<CameraDescription> cameras,
       List<CameraDescription> camera,
       this.imageUrls})
@@ -38,10 +40,12 @@ class InfoPage extends StatefulWidget {
 }
 
 class _InfoPageState extends State<InfoPage> {
-  Celebration _celebration;
+  Event _event;
   bool _isLoading = false;
   Color backgroundColor = Color.fromRGBO(235, 237, 241, 1);
   Color pinkColor = Color.fromRGBO(237, 18, 81, 1);
+  var screenHeigth;
+  var screenWidth;
 
   Future<void> _getCelebration() async {
     setState(() {
@@ -50,13 +54,13 @@ class _InfoPageState extends State<InfoPage> {
 
     try {
       final response = await http.get(
-          "https://immense-anchorage-57010.herokuapp.com/api/celebration/${this.widget.celebrationId}",
+          "https://immense-anchorage-57010.herokuapp.com/api/event/${this.widget.eventId}",
           headers: {
             'Accept': 'application/json',
             HttpHeaders.authorizationHeader: Authorization.token
           });
       if (response.statusCode == 200) {
-        _celebration = Celebration.fromJson(jsonDecode(response.body));
+        _event = Event.fromJson(jsonDecode(response.body));
 
         setState(() {
           _isLoading = false;
@@ -78,8 +82,8 @@ class _InfoPageState extends State<InfoPage> {
   @override
   Widget build(BuildContext context) {
     String _description;
-    var screenHeigth = MediaQuery.of(context).size.height;
-    var screenWidth = MediaQuery.of(context).size.width;
+    screenHeigth = MediaQuery.of(context).size.height;
+    screenWidth = MediaQuery.of(context).size.width;
     if (_isLoading) {
       return Loader.getLoader(context);
     } else {
@@ -99,7 +103,7 @@ class _InfoPageState extends State<InfoPage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                       Text(
-                        "${_celebration.celebrated.firstName.toUpperCase()} ${_celebration.celebrated.lastName.toUpperCase()}",
+                        "${_event.celebration.celebrated.firstName.toUpperCase()} ${_event.celebration.celebrated.lastName.toUpperCase()}",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontWeight: FontWeight.w900,
@@ -108,7 +112,7 @@ class _InfoPageState extends State<InfoPage> {
                         ),
                       ),
                       Text(
-                        "${DateTime.parse(_celebration.date).day} ${DateFormat.numberToString(DateTime.parse(_celebration.date).month)}",
+                        "${DateTime.parse(_event.celebrationDate).day} ${DateFormat.numberToString(DateTime.parse(_event.celebrationDate).month)}",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             color: Colors.black,
@@ -116,13 +120,14 @@ class _InfoPageState extends State<InfoPage> {
                             fontSize: 18),
                       ),
                       Text(
-                        '${_celebration.celebrationType.toUpperCase()}',
+                        '${_event.celebration.celebrationType.toUpperCase()}',
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.w900),
                       ),
                     ],
                   ),
-                  _celebration.celebrated.id != Authorization.getLoggedUser().id
+                  _event.celebration.celebrated.id !=
+                          Authorization.getLoggedUser().id
                       ? Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
@@ -133,8 +138,7 @@ class _InfoPageState extends State<InfoPage> {
                                 height: screenHeigth / 100 * 35,
                                 child: ListView.builder(
                                   scrollDirection: Axis.horizontal,
-                                  itemCount: _celebration
-                                      .activeEvent.eventImagesUrls.length,
+                                  itemCount: _event.eventImagesUrls.length,
                                   itemBuilder: (context, i) {
                                     return Container(
                                       decoration: BoxDecoration(
@@ -145,9 +149,8 @@ class _InfoPageState extends State<InfoPage> {
                                               topRight: Radius.circular(20)),
                                           image: DecorationImage(
                                             fit: BoxFit.fill,
-                                            image: NetworkImage(_celebration
-                                                .activeEvent
-                                                .eventImagesUrls[i]),
+                                            image: NetworkImage(
+                                                _event.eventImagesUrls[i]),
                                           )),
                                       width: screenWidth / 100 * 70,
                                       margin: EdgeInsets.symmetric(
@@ -167,9 +170,7 @@ class _InfoPageState extends State<InfoPage> {
                             scrollDirection: Axis.horizontal,
                             itemCount: 3,
                             itemBuilder: (context, i) {
-                              if (i >=
-                                  _celebration
-                                      .activeEvent.eventImagesUrls.length) {
+                              if (i >= _event.eventImagesUrls.length) {
                                 return Container(
                                   child: IconButton(
                                       icon: Icon(Icons.add_a_photo),
@@ -181,7 +182,7 @@ class _InfoPageState extends State<InfoPage> {
                                                 child: CameraScreen(
                                               requestMethod: 'PUT',
                                               requestUrl:
-                                                  '${Environment.siteUrl}/event/${_celebration.activeEvent.id}/image',
+                                                  '${Environment.siteUrl}/event/${_event.id}/image',
                                               requestField: 'eventPic',
                                               updateToken: false,
                                             )));
@@ -206,8 +207,8 @@ class _InfoPageState extends State<InfoPage> {
                                           topRight: Radius.circular(20)),
                                       image: DecorationImage(
                                         fit: BoxFit.fill,
-                                        image: NetworkImage(_celebration
-                                            .activeEvent.eventImagesUrls[i]),
+                                        image: NetworkImage(
+                                            _event.eventImagesUrls[i]),
                                       )),
                                   width: screenWidth / 100 * 70,
                                   margin: EdgeInsets.symmetric(
@@ -217,7 +218,7 @@ class _InfoPageState extends State<InfoPage> {
                             },
                           ),
                         ),
-                  _celebration.activeEvent.description == ""
+                  _event.description == ""
                       ? Container(
                           margin:
                               EdgeInsets.only(bottom: screenHeigth / 100 * 3),
@@ -228,9 +229,10 @@ class _InfoPageState extends State<InfoPage> {
                           margin:
                               EdgeInsets.only(bottom: screenHeigth / 100 * 3),
                           alignment: Alignment.center,
-                          child: Text(_celebration.activeEvent.description),
+                          child: Text(_event.description),
                         ),
-                  _celebration.celebrated.id != Authorization.getLoggedUser().id
+                  _event.celebration.celebrated.id !=
+                          Authorization.getLoggedUser().id
                       ? Container()
                       : Container(
                           margin: EdgeInsets.symmetric(
@@ -239,7 +241,7 @@ class _InfoPageState extends State<InfoPage> {
                           child: RaisedButton(
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20)),
-                            child: _celebration.activeEvent.description == ""
+                            child: _event.description == ""
                                 ? Text(
                                     'INSERISCI UNA DESCRIZIONE',
                                     style: TextStyle(color: Colors.white),
@@ -254,7 +256,7 @@ class _InfoPageState extends State<InfoPage> {
                                   context,
                                   PageTransition(
                                       child: Organizes(
-                                        id: _celebration.activeEvent.id,
+                                        id: _event.id,
                                         creating: false,
                                         updateDescriptionCallback:
                                             _getCelebration,
@@ -263,117 +265,22 @@ class _InfoPageState extends State<InfoPage> {
                             },
                           ),
                         ),
-                  _celebration.celebrated.id != Authorization.getLoggedUser().id
-                      ? Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            Expanded(
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: screenHeigth / 100 * 3),
-                                height: screenHeigth / 100 * 25,
-                                child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount:
-                                      _celebration.activeEvent.reviews.length,
-                                  itemBuilder: (context, i) {
-                                    return Container(
-                                      decoration: BoxDecoration(
-                                        boxShadow: <BoxShadow>[
-                                          BoxShadow(
-                                              offset: Offset(0, 4),
-                                              color: Colors.grey,
-                                              blurRadius: 1)
-                                        ],
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.only(
-                                            bottomLeft: Radius.circular(20),
-                                            bottomRight: Radius.circular(20),
-                                            topRight: Radius.circular(20)),
-                                      ),
-                                      width: screenWidth / 100 * 70,
-                                      margin: EdgeInsets.symmetric(
-                                          horizontal: screenWidth / 100 * 5),
-                                      child: Column(
-                                        children: <Widget>[
-                                          Container(
-                                              margin: EdgeInsets.only(
-                                                  top: screenHeigth / 100 * 3),
-                                              child: Text(
-                                                _celebration.activeEvent
-                                                    .reviews[i].reviewer
-                                                    .toUpperCase(),
-                                                style: TextStyle(
-                                                    color: pinkColor,
-                                                    fontWeight: FontWeight.w700,
-                                                    fontSize: 20),
-                                              )),
-                                          Text(_celebration
-                                              .activeEvent.reviews[i].comment
-                                              .toUpperCase()),
-                                          Row(
-                                            children: <Widget>[
-                                              Expanded(
-                                                child: Container(
-                                                 margin: EdgeInsets.only(left: screenWidth/100*50,top: screenHeigth/100*1.5),
-                                                  width: screenWidth / 100 * 70,
-                                                  height:
-                                                      screenHeigth / 100 * 5,
-                                                  child: ListView.builder(
-                                                      scrollDirection:
-                                                          Axis.horizontal,
-                                                      itemCount: _celebration
-                                                          .activeEvent
-                                                          .reviews[i]
-                                                          .rating,
-                                                      itemBuilder:
-                                                          (context, i) {
-                                                        return Icon(
-                                                          Icons.stars,
-                                                          color: pinkColor,
-                                                        );
-                                                      }),
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    );
-                                    // return Container(
-                                    //   child: FlatButton(
-                                    //     child: Text(
-                                    //       'Inserisci una recensione',
-                                    //       style: TextStyle(color: pinkColor),
-                                    //     ),
-                                    //     onPressed: () {
-                                    //       Navigator.push(
-                                    //           context,
-                                    //           PageTransition(
-                                    //               child: Reviews(
-                                    //             id: _celebration.activeEvent.id,
-                                    //             updateDescriptionCallback: _getCelebration,
-                                    //           )));
-                                    //     },
-                                    //   ),
-                                    //   decoration: BoxDecoration(
-                                    //     color: Colors.white,
-                                    //     borderRadius: BorderRadius.only(
-                                    //         bottomLeft: Radius.circular(20),
-                                    //         bottomRight: Radius.circular(20),
-                                    //         topRight: Radius.circular(20)),
-                                    //   ),
-                                    //   width: screenWidth / 100 * 70,
-                                    //   margin: EdgeInsets.symmetric(
-                                    //       horizontal: screenWidth / 100 * 5),
-                                    // );
-                                  },
-                                ),
-                              ),
-                            )
-                          ],
-                        )
-                      : Container()
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                              vertical: screenHeigth / 100 * 3),
+                          height: screenHeigth / 100 * 25,
+                          child: getReview(
+                              _event.reviews,
+                              _event.celebration.celebrated.id !=
+                                      Authorization.getLoggedUser().id &&
+                                  !alreadyReviewed()),
+                        ),
+                      ),
+                    ],
+                  )
                 ],
               ),
             ),
@@ -381,5 +288,105 @@ class _InfoPageState extends State<InfoPage> {
         ),
       );
     }
+  }
+
+  Widget getReview(List<Review> reviews, bool reviewForm) {
+    int count = reviewForm ? reviews.length + 1 : reviews.length;
+
+    return ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: count,
+        itemBuilder: (context, i) {
+          int index = reviewForm ? i - 1 : i;
+          if (index == -1) {
+            return Container(
+              child: FlatButton(
+                child: Text(
+                  'Inserisci una recensione',
+                  style: TextStyle(color: pinkColor),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      PageTransition(
+                          child: Reviews(
+                        id: _event.id,
+                        updateDescriptionCallback: _getCelebration,
+                      )));
+                },
+              ),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(20),
+                    bottomRight: Radius.circular(20),
+                    topRight: Radius.circular(20)),
+              ),
+              width: screenWidth / 100 * 70,
+              margin: EdgeInsets.symmetric(horizontal: screenWidth / 100 * 5),
+            );
+          } else {
+            return Container(
+              decoration: BoxDecoration(
+                boxShadow: <BoxShadow>[
+                  BoxShadow(
+                      offset: Offset(0, 4), color: Colors.grey, blurRadius: 1)
+                ],
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(20),
+                    bottomRight: Radius.circular(20),
+                    topRight: Radius.circular(20)),
+              ),
+              width: screenWidth / 100 * 70,
+              margin: EdgeInsets.symmetric(horizontal: screenWidth / 100 * 5),
+              child: Column(
+                children: <Widget>[
+                  Container(
+                      margin: EdgeInsets.only(top: screenHeigth / 100 * 3),
+                      child: Text(
+                        "${reviews[index].reviewer.firstName.toUpperCase()} ${reviews[index].reviewer.lastName.toUpperCase()}",
+                        style: TextStyle(
+                            color: pinkColor,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 20),
+                      )),
+                  Text(reviews[index].comment.toUpperCase()),
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Container(
+                          margin: EdgeInsets.only(
+                              left: screenWidth / 100 * 50,
+                              top: screenHeigth / 100 * 1.5),
+                          width: screenWidth / 100 * 70,
+                          height: screenHeigth / 100 * 5,
+                          child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: reviews[index].rating,
+                              itemBuilder: (context, i) {
+                                return Icon(
+                                  Icons.stars,
+                                  color: pinkColor,
+                                );
+                              }),
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            );
+          }
+        });
+  }
+
+  bool alreadyReviewed() {
+    bool reviewed = false;
+    _event.reviews.forEach((review) => {
+          if (review.reviewer.id == Authorization.getLoggedUser().id)
+            {reviewed = true}
+        });
+    return reviewed;
   }
 }

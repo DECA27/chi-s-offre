@@ -32,7 +32,7 @@ class ListaEventi extends StatefulWidget {
 }
 
 class _ListaEventiState extends State<ListaEventi> {
-  List<Celebration> _celebrations = [];
+  List<Event> _events = [];
   bool _isLoading = false;
 
   Future<void> _getEvents() async {
@@ -41,7 +41,7 @@ class _ListaEventiState extends State<ListaEventi> {
     });
     try {
       final response = await http.get(
-          "https://immense-anchorage-57010.herokuapp.com/api/celebrations/coming/20",
+          "https://immense-anchorage-57010.herokuapp.com/api/events/coming/20",
           headers: {
             'Accept': 'application/json',
             HttpHeaders.authorizationHeader: Authorization.token
@@ -50,11 +50,10 @@ class _ListaEventiState extends State<ListaEventi> {
         Iterable list = jsonDecode(response.body);
         for (var i = 0; i < list.length; i++) {
           print(list.elementAt(i));
-          print(Celebration.fromJson(list.elementAt(i)).id);
+          print(Event.fromJson(list.elementAt(i)).id);
         }
 
-        _celebrations =
-            list.map((model) => Celebration.fromJson(model)).toList();
+        _events = list.map((model) => Event.fromJson(model)).toList();
         setState(() {
           _isLoading = false;
         });
@@ -129,7 +128,7 @@ class _ListaEventiState extends State<ListaEventi> {
           body: Container(
               decoration: BoxDecoration(color: backgroundColor),
               child: ListView.builder(
-                  itemCount: _celebrations.length,
+                  itemCount: _events.length,
                   physics: BouncingScrollPhysics(),
                   itemBuilder: (context, i) {
                     return Container(
@@ -161,7 +160,7 @@ class _ListaEventiState extends State<ListaEventi> {
                                       context,
                                       PageTransition(
                                           child: InfoPage(
-                                            celebrationId: _celebrations[i].id,
+                                            eventId: _events[i].id,
                                             camera: <CameraDescription>[],
                                           ),
                                           type: PageTransitionType.fade));
@@ -181,19 +180,19 @@ class _ListaEventiState extends State<ListaEventi> {
                                               CrossAxisAlignment.start,
                                           children: <Widget>[
                                             Text(
-                                              '${DateTime.parse(_celebrations[i].date).day} ${DateFormat.numberToString(DateTime.parse(_celebrations[i].date).month)}',
+                                              '${DateTime.parse(_events[i].celebrationDate).day} ${DateFormat.numberToString(DateTime.parse(_events[i].celebrationDate).month)}',
                                               style: TextStyle(
                                                   fontSize: 13,
                                                   fontWeight: FontWeight.w900),
                                             ),
                                             Text(
-                                                '${_celebrations[i].celebrated.firstName.toUpperCase()} ${_celebrations[i].celebrated.lastName.toUpperCase()}',
+                                                '${_events[i].celebration.celebrated.firstName.toUpperCase()} ${_events[i].celebration.celebrated.lastName.toUpperCase()}',
                                                 style: TextStyle(
                                                     fontSize: 20,
                                                     fontWeight: FontWeight.w900,
                                                     color: pinkColor)),
                                             Text(
-                                              '${_celebrations[i].celebrationType.toUpperCase()}',
+                                              '${_events[i].celebration.celebrationType.toUpperCase()}',
                                               style: TextStyle(
                                                   fontSize: 13,
                                                   fontWeight: FontWeight.w900),

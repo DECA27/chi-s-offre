@@ -62,8 +62,7 @@ class _LoginState extends State<Login> {
             width: 100,
             child: CircularProgressIndicator(
                 backgroundColor: Colors.white,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                    pinkColor),
+                valueColor: AlwaysStoppedAnimation<Color>(pinkColor),
                 strokeWidth: 5),
           ),
         ),
@@ -139,13 +138,13 @@ class _LoginState extends State<Login> {
                                 borderSide: BorderSide(color: pinkColor)),
                             contentPadding:
                                 EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                            errorText: 'Inserisci la tua email',
                             hintText: "Email",
+                            helperText: 'Inserisci la tua email',
                             hintStyle: TextStyle(color: pinkColor),
                             focusColor: pinkColor,
-                             errorStyle: TextStyle(color: pinkColor),
-                          errorBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: pinkColor)),
+                            helperStyle: TextStyle(color: pinkColor),
+                            errorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: pinkColor)),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10.0)),
                           ),
@@ -191,9 +190,9 @@ class _LoginState extends State<Login> {
                                 errorText: 'Inserisci la tua password',
                                 hintText: "Password",
                                 hintStyle: TextStyle(color: pinkColor),
-                                 errorStyle: TextStyle(color: pinkColor),
-                          errorBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: pinkColor)),
+                                errorStyle: TextStyle(color: pinkColor),
+                                errorBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: pinkColor)),
                                 border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10.0),
                                     borderSide: BorderSide(color: pinkColor))),
