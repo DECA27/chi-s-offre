@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:fides_calendar/authorization/authorization.dart';
 import 'package:fides_calendar/lista_eventi.dart';
+import 'package:fides_calendar/util/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:page_transition/page_transition.dart';
@@ -11,6 +12,7 @@ class Organizes extends StatefulWidget {
   final id;
   final bool creating;
   final Function updateDescriptionCallback;
+  
 
   const Organizes(
       {Key key,
@@ -27,8 +29,12 @@ class _OrganizesState extends State<Organizes> {
   Color pinkColor = Color.fromRGBO(237, 18, 81, 1);
   Color backgroundColor = Color.fromRGBO(235, 237, 241, 1);
   String _description;
+  bool _isLoading = false;
   @override
   Widget build(BuildContext context) {
+     if (_isLoading) {
+      return Loader.getLoader(context);
+    } else {
     return Scaffold(
       backgroundColor: backgroundColor,
       body: SingleChildScrollView(
@@ -65,11 +71,15 @@ class _OrganizesState extends State<Organizes> {
                   ),
                 ),
               ),
+      
               RaisedButton(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20)),
                   color: pinkColor,
                   onPressed: () async {
+                    setState(() {
+                      _isLoading = true;
+                    });
                     _formKey.currentState.save();
                     http.Response response;
 
@@ -95,4 +105,5 @@ class _OrganizesState extends State<Organizes> {
       ),
     );
   }
+}
 }

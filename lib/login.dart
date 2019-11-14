@@ -25,10 +25,16 @@ class _LoginState extends State<Login> {
   int tapCounter = 0;
   Color backgroundColor = Color.fromRGBO(235, 237, 241, 1);
   Color pinkColor = Color.fromRGBO(237, 18, 81, 1);
-  bool passwordVisible;
+  bool _obscureText = true;
+  @override
+  void _toggle() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
+
   @override
   void initState() {
-    passwordVisible = false;
     super.initState();
 
     SchedulerBinding.instance.addPostFrameCallback((_) async {
@@ -139,7 +145,7 @@ class _LoginState extends State<Login> {
                             contentPadding:
                                 EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                             hintText: "Email",
-                            helperText: 'Inserisci la tua email',
+                            errorText: 'Inserisci la tua email',
                             hintStyle: TextStyle(color: pinkColor),
                             focusColor: pinkColor,
                             helperStyle: TextStyle(color: pinkColor),
@@ -169,17 +175,17 @@ class _LoginState extends State<Login> {
                               }
                               return null;
                             },
-                            obscureText: passwordVisible,
+                            obscureText: _obscureText,
                             decoration: InputDecoration(
                                 suffixIcon: IconButton(
                                   icon: Icon(
-                                    passwordVisible
+                                    _obscureText
                                         ? Icons.visibility
                                         : Icons.visibility_off,
                                     color: pinkColor,
                                   ),
                                   onPressed: () {
-                                    passwordVisible = !passwordVisible;
+                                    _toggle();
                                   },
                                 ),
                                 focusedBorder: OutlineInputBorder(

@@ -39,9 +39,9 @@ class _NameDayState extends State<NameDay> {
                   child: SizedBox(
                     width: 100,
                     child: Image.asset(
-                              "assets/images/emoji.png",
-                              fit: BoxFit.contain,
-                            ),
+                      "assets/images/emoji.png",
+                      fit: BoxFit.contain,
+                    ),
                   ),
                 ),
                 Container(
@@ -113,6 +113,9 @@ class _NameDayState extends State<NameDay> {
                       minWidth: MediaQuery.of(context).size.width,
                       padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                       onPressed: () async {
+                        setState(() {
+                          _isLoading = true;
+                        });
                         _formKey.currentState.save();
                         if (_formKey.currentState.validate()) {
                           Response response = await http.put(
@@ -129,6 +132,10 @@ class _NameDayState extends State<NameDay> {
                             Authorization.saveToken(response.body);
                             Navigator.pushNamedAndRemoveUntil(context,
                                 '/events', (Route<dynamic> route) => false);
+                          } else {
+                            setState(() {
+                              _isLoading = false;
+                            });
                           }
                         }
                       },

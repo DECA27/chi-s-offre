@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:fides_calendar/authorization/authorization.dart';
 import 'package:fides_calendar/chat.dart';
+import 'package:fides_calendar/environment/environment.dart';
 import 'package:fides_calendar/login.dart';
 import 'package:fides_calendar/main.dart' as prefix0;
 import 'package:fides_calendar/models/celebration.dart';
@@ -35,17 +36,15 @@ class _ListaEventiState extends State<ListaEventi> {
   List<Event> _events = [];
   bool _isLoading = false;
 
-  Future<void> _getEvents() async {
+  Future<void> _getEvents(String url) async {
     setState(() {
       _isLoading = true;
     });
     try {
-      final response = await http.get(
-          "https://immense-anchorage-57010.herokuapp.com/api/events/coming/20",
-          headers: {
-            'Accept': 'application/json',
-            HttpHeaders.authorizationHeader: Authorization.token
-          });
+      final response = await http.get(url, headers: {
+        'Accept': 'application/json',
+        HttpHeaders.authorizationHeader: Authorization.token
+      });
       if (response.statusCode == 200) {
         Iterable list = jsonDecode(response.body);
         for (var i = 0; i < list.length; i++) {
@@ -70,11 +69,13 @@ class _ListaEventiState extends State<ListaEventi> {
 
   @override
   void initState() {
-    _getEvents();
+    _getEvents(
+        "https://immense-anchorage-57010.herokuapp.com/api/events/coming/20");
     super.initState();
     if (Authorization.getLoggedUser().celebrations.length < 2) {
       SchedulerBinding.instance.addPostFrameCallback((_) {
-        Navigator.pushNamed(context, '/nameDayError');
+        Navigator.pushNamedAndRemoveUntil(
+            context, '/nameDayError', (Route<dynamic> route) => false);
       });
     }
     ;
@@ -90,6 +91,52 @@ class _ListaEventiState extends State<ListaEventi> {
       return Loader.getLoader(context);
     } else {
       return Scaffold(
+          bottomNavigationBar: BottomNavigationBar(
+            onTap: (index) {
+              if (index == 0) {
+                setState(() {
+                  _getEvents("${Environment.siteUrl}/events/passed");
+                });
+              } else if (index == 1) {
+                setState(() {
+                  _getEvents("${Environment.siteUrl}/events/coming/20");
+                });
+              } else {
+                Navigator.push(context, PageTransition(child: Chat()));
+              }
+            },
+            elevation: 0,
+            backgroundColor: Color.fromRGBO(235, 237, 241, 100),
+            items: <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.list,
+                    color: Color.fromRGBO(237, 18, 81, 1),
+                  ),
+                  title: Text(
+                    'EVENTI PASSATI',
+                    style: TextStyle(
+                        color: Color.fromRGBO(237, 18, 81, 1), fontSize: 12),
+                  )),
+              BottomNavigationBarItem(
+                  icon: ImageIcon(
+                    AssetImage('assets/images/Asset 15.png'),
+                    color: pinkColor,
+                    size: 35,
+                  ),
+                  title: Text('HOME',
+                      style: TextStyle(color: Color.fromRGBO(237, 18, 81, 1)))),
+              BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.chat,
+                    color: Color.fromRGBO(237, 18, 81, 1),
+                  ),
+                  title: Text('CHAT',
+                      style: TextStyle(
+                          color: Color.fromRGBO(237, 18, 81, 1),
+                          fontSize: 12))),
+            ],
+          ),
           appBar: AppBar(
               actions: <Widget>[
                 GestureDetector(
@@ -180,7 +227,7 @@ class _ListaEventiState extends State<ListaEventi> {
                                               CrossAxisAlignment.start,
                                           children: <Widget>[
                                             Text(
-                                              '${DateTime.parse(_events[i].celebrationDate).day} ${DateFormat.numberToString(DateTime.parse(_events[i].celebrationDate).month)}',
+                                              '${DateTime.parse(_events[i].celebrationDate).day} ${DateFormat.numberToString(DateTime.parse(_events[i].celebrationDate).month)} ${DateTime.parse(_events[i].celebrationDate).year}',
                                               style: TextStyle(
                                                   fontSize: 13,
                                                   fontWeight: FontWeight.w900),

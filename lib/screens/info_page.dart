@@ -138,24 +138,41 @@ class _InfoPageState extends State<InfoPage> {
                                 height: screenHeigth / 100 * 35,
                                 child: ListView.builder(
                                   scrollDirection: Axis.horizontal,
-                                  itemCount: _event.eventImagesUrls.length,
+                                  itemCount: _event.eventImagesUrls.length > 0
+                                      ? _event.eventImagesUrls.length
+                                      : 1,
                                   itemBuilder: (context, i) {
-                                    return Container(
-                                      decoration: BoxDecoration(
-                                          color: Colors.black,
-                                          borderRadius: BorderRadius.only(
-                                              bottomLeft: Radius.circular(20),
-                                              bottomRight: Radius.circular(20),
-                                              topRight: Radius.circular(20)),
-                                          image: DecorationImage(
-                                            fit: BoxFit.fill,
-                                            image: NetworkImage(
-                                                _event.eventImagesUrls[i]),
-                                          )),
-                                      width: screenWidth / 100 * 70,
-                                      margin: EdgeInsets.symmetric(
-                                          horizontal: screenWidth / 100 * 5),
-                                    );
+                                    if (_event.eventImagesUrls.length > 0) {
+                                      return Container(
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.only(
+                                                bottomLeft: Radius.circular(20),
+                                                bottomRight:
+                                                    Radius.circular(20),
+                                                topRight: Radius.circular(20)),
+                                            image: DecorationImage(
+                                              fit: BoxFit.fill,
+                                              image: NetworkImage(
+                                                  _event.eventImagesUrls[i]),
+                                            )),
+                                        width: screenWidth / 100 * 70,
+                                        margin: EdgeInsets.symmetric(
+                                            horizontal: screenWidth / 100 * 5),
+                                      );
+                                    } else {
+                                      return Container(
+                                        width: screenWidth,
+                                        height: screenHeigth / 100 * 10,
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          'NESSUNA IMMAGINE INSERITA',
+                                          style: TextStyle(
+                                              color: pinkColor,
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                      );
+                                    }
                                   },
                                 ),
                               ),
@@ -200,7 +217,7 @@ class _InfoPageState extends State<InfoPage> {
                               } else {
                                 return Container(
                                   decoration: BoxDecoration(
-                                      color: Colors.black,
+                                      color: Colors.white,
                                       borderRadius: BorderRadius.only(
                                           bottomLeft: Radius.circular(20),
                                           bottomRight: Radius.circular(20),
@@ -221,9 +238,13 @@ class _InfoPageState extends State<InfoPage> {
                   _event.description == ""
                       ? Container(
                           margin:
-                              EdgeInsets.only(bottom: screenHeigth / 100 * 3),
+                              EdgeInsets.only(bottom: screenHeigth / 100 * 8),
                           alignment: Alignment.center,
-                          child: Text('NESSUNA DESCRIZIONE INSERITA'),
+                          child: Text(
+                            'NESSUNA DESCRIZIONE INSERITA',
+                            style: TextStyle(
+                                color: pinkColor, fontWeight: FontWeight.w500),
+                          ),
                         )
                       : Container(
                           margin:
@@ -274,6 +295,7 @@ class _InfoPageState extends State<InfoPage> {
                           height: screenHeigth / 100 * 25,
                           child: getReview(
                               _event.reviews,
+                              _event.status == "closed" &&
                               _event.celebration.celebrated.id !=
                                       Authorization.getLoggedUser().id &&
                                   !alreadyReviewed()),
@@ -300,6 +322,7 @@ class _InfoPageState extends State<InfoPage> {
           int index = reviewForm ? i - 1 : i;
           if (index == -1) {
             return Container(
+              height: screenHeigth / 100 * 6,
               child: FlatButton(
                 child: Text(
                   'Inserisci una recensione',
@@ -340,41 +363,43 @@ class _InfoPageState extends State<InfoPage> {
               ),
               width: screenWidth / 100 * 70,
               margin: EdgeInsets.symmetric(horizontal: screenWidth / 100 * 5),
-              child: Column(
-                children: <Widget>[
-                  Container(
-                      margin: EdgeInsets.only(top: screenHeigth / 100 * 3),
-                      child: Text(
-                        "${reviews[index].reviewer.firstName.toUpperCase()} ${reviews[index].reviewer.lastName.toUpperCase()}",
-                        style: TextStyle(
-                            color: pinkColor,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 20),
-                      )),
-                  Text(reviews[index].comment.toUpperCase()),
-                  Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Container(
-                          margin: EdgeInsets.only(
-                              left: screenWidth / 100 * 50,
-                              top: screenHeigth / 100 * 1.5),
-                          width: screenWidth / 100 * 70,
-                          height: screenHeigth / 100 * 5,
-                          child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: reviews[index].rating,
-                              itemBuilder: (context, i) {
-                                return Icon(
-                                  Icons.stars,
-                                  color: pinkColor,
-                                );
-                              }),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                        margin: EdgeInsets.only(top: screenHeigth / 100 * 3),
+                        child: Text(
+                          "${reviews[index].reviewer.firstName.toUpperCase()} ${reviews[index].reviewer.lastName.toUpperCase()}",
+                          style: TextStyle(
+                              color: pinkColor,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 20),
+                        )),
+                    Text(reviews[index].comment),
+                    Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: Container(
+                            margin: EdgeInsets.only(
+                                left: screenWidth / 100 * 35,
+                                top: screenHeigth / 100 * 1),
+                            width: screenWidth / 100 * 70,
+                            height: screenHeigth / 100 * 5,
+                            child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: reviews[index].rating,
+                                itemBuilder: (context, i) {
+                                  return Icon(
+                                    Icons.stars,
+                                    color: pinkColor,
+                                  );
+                                }),
+                          ),
                         ),
-                      ),
-                    ],
-                  )
-                ],
+                      ],
+                    )
+                  ],
+                ),
               ),
             );
           }

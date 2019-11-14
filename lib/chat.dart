@@ -35,6 +35,8 @@ class ChatWindow extends State<Chat> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext ctx) {
+    Color backgroundColor = Color.fromRGBO(235, 237, 241, 1);
+    Color pinkColor = Color.fromRGBO(237, 18, 81, 1);
     if (_isLoading) {
       return Container(
         width: MediaQuery.of(context).size.width,
@@ -47,7 +49,7 @@ class ChatWindow extends State<Chat> with TickerProviderStateMixin {
             child: CircularProgressIndicator(
                 backgroundColor: Colors.white,
                 valueColor: AlwaysStoppedAnimation<Color>(
-                    Color.fromRGBO(174, 0, 30, 1)),
+                    pinkColor),
                 strokeWidth: 5),
           ),
         ),
@@ -55,10 +57,11 @@ class ChatWindow extends State<Chat> with TickerProviderStateMixin {
     } else {
       return Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           centerTitle: true,
-          backgroundColor: Color.fromRGBO(174, 0, 30, 1),
-          title: Text("Chat "),
-          elevation: Theme.of(ctx).platform == TargetPlatform.iOS ? 0.0 : 6.0,
+          backgroundColor: backgroundColor,
+          title: Text("Chat",style: TextStyle(fontWeight: FontWeight.w700,color: pinkColor),),
+          elevation:Theme.of(ctx).platform == TargetPlatform.iOS ? 0.0 : 6.0,
         ),
         body: Column(children: <Widget>[
           Flexible(
@@ -107,7 +110,7 @@ class ChatWindow extends State<Chat> with TickerProviderStateMixin {
                               ? () => _submitMsg(_textController.text)
                               : null)
                       : IconButton(
-                          icon: Icon(Icons.send),
+                          icon: Icon(Icons.send,color: Color.fromRGBO(237, 18, 81, 1)),
                           onPressed: _isWriting
                               ? () => _submitMsg(_textController.text)
                               : null,
