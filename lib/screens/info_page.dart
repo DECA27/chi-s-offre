@@ -54,7 +54,7 @@ class _InfoPageState extends State<InfoPage> {
 
     try {
       final response = await http.get(
-          "https://immense-anchorage-57010.herokuapp.com/api/event/${this.widget.eventId}",
+          "${Environment.siteUrl}event/${this.widget.eventId}",
           headers: {
             'Accept': 'application/json',
             HttpHeaders.authorizationHeader: Authorization.token
@@ -247,8 +247,10 @@ class _InfoPageState extends State<InfoPage> {
                           ),
                         )
                       : Container(
-                          margin:
-                              EdgeInsets.only(bottom: screenHeigth / 100 * 3),
+                          width: screenWidth / 100 * 70,
+                          margin: EdgeInsets.symmetric(
+                              horizontal: screenWidth / 100 * 5),
+                          height: screenHeigth / 100 * 12,
                           alignment: Alignment.center,
                           child: Text(_event.description),
                         ),
@@ -296,7 +298,7 @@ class _InfoPageState extends State<InfoPage> {
                           child: getReview(
                               _event.reviews,
                               _event.status == "closed" &&
-                              _event.celebration.celebrated.id !=
+                                  _event.celebration.celebrated.id !=
                                       Authorization.getLoggedUser().id &&
                                   !alreadyReviewed()),
                         ),
@@ -351,10 +353,6 @@ class _InfoPageState extends State<InfoPage> {
           } else {
             return Container(
               decoration: BoxDecoration(
-                boxShadow: <BoxShadow>[
-                  BoxShadow(
-                      offset: Offset(0, 4), color: Colors.grey, blurRadius: 1)
-                ],
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(20),
@@ -367,22 +365,27 @@ class _InfoPageState extends State<InfoPage> {
                 child: Column(
                   children: <Widget>[
                     Container(
-                        margin: EdgeInsets.only(top: screenHeigth / 100 * 3),
+                        alignment: Alignment.topLeft,
+                        margin: EdgeInsets.only(
+                            top: screenHeigth / 100 * 3,
+                            left: screenWidth / 100 * 2),
                         child: Text(
                           "${reviews[index].reviewer.firstName.toUpperCase()} ${reviews[index].reviewer.lastName.toUpperCase()}",
                           style: TextStyle(
                               color: pinkColor,
                               fontWeight: FontWeight.w700,
-                              fontSize: 20),
+                              fontSize: 19),
                         )),
-                    Text(reviews[index].comment),
+                    Container(
+                        margin: EdgeInsets.only(top: screenHeigth / 100 * 3),
+                        child: Text(reviews[index].comment)),
                     Row(
                       children: <Widget>[
                         Expanded(
                           child: Container(
                             margin: EdgeInsets.only(
                                 left: screenWidth / 100 * 35,
-                                top: screenHeigth / 100 * 1),
+                                top: screenHeigth / 100 * 2),
                             width: screenWidth / 100 * 70,
                             height: screenHeigth / 100 * 5,
                             child: ListView.builder(

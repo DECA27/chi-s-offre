@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-    return MaterialApp( 
+    return MaterialApp(
       initialRoute: '/',
       routes: {
         '/': (context) => LaunchScreen(),

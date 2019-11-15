@@ -1,15 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
-
 import 'package:fides_calendar/authorization/authorization.dart';
 import 'package:fides_calendar/environment/environment.dart';
+import 'package:fides_calendar/lista_eventi.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
-
 import 'package:http/http.dart' as http;
 
 class Chat extends StatefulWidget {
@@ -48,8 +49,7 @@ class ChatWindow extends State<Chat> with TickerProviderStateMixin {
             width: 100,
             child: CircularProgressIndicator(
                 backgroundColor: Colors.white,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                    pinkColor),
+                valueColor: AlwaysStoppedAnimation<Color>(pinkColor),
                 strokeWidth: 5),
           ),
         ),
@@ -60,8 +60,11 @@ class ChatWindow extends State<Chat> with TickerProviderStateMixin {
           automaticallyImplyLeading: false,
           centerTitle: true,
           backgroundColor: backgroundColor,
-          title: Text("Chat",style: TextStyle(fontWeight: FontWeight.w700,color: pinkColor),),
-          elevation:Theme.of(ctx).platform == TargetPlatform.iOS ? 0.0 : 6.0,
+          title: Text(
+            "Chat",
+            style: TextStyle(fontWeight: FontWeight.w700, color: pinkColor),
+          ),
+          elevation: Theme.of(ctx).platform == TargetPlatform.iOS ? 0.0 : 6.0,
         ),
         body: Column(children: <Widget>[
           Flexible(
@@ -110,7 +113,8 @@ class ChatWindow extends State<Chat> with TickerProviderStateMixin {
                               ? () => _submitMsg(_textController.text)
                               : null)
                       : IconButton(
-                          icon: Icon(Icons.send,color: Color.fromRGBO(237, 18, 81, 1)),
+                          icon: Icon(Icons.send,
+                              color: Color.fromRGBO(237, 18, 81, 1)),
                           onPressed: _isWriting
                               ? () => _submitMsg(_textController.text)
                               : null,
@@ -126,7 +130,7 @@ class ChatWindow extends State<Chat> with TickerProviderStateMixin {
 
   Future<void> getChat() async {
     http.Response response = await http.get('${Environment.siteUrl}/chat',
-    headers: {HttpHeaders.authorizationHeader: Authorization.token} );
+        headers: {HttpHeaders.authorizationHeader: Authorization.token});
     Iterable json = jsonDecode(response.body);
     _messages = json
         .map((message) => Msg(
@@ -165,9 +169,11 @@ class ChatWindow extends State<Chat> with TickerProviderStateMixin {
   }
 
   Future<void> handleSocket() async {
-    socket = await IO.io('${Environment.chatRoom}', <String, dynamic>{
-      'transports': ['websocket'],
-    });
+    socket = await IO.io(
+        '${Environment.chatRoom}?token=${Authorization.token}',
+        <String, dynamic>{
+          'transports': ['websocket'],
+        });
 
     socket.emit('data', {'userId': Authorization.getLoggedUser().id});
 
@@ -272,15 +278,21 @@ class Msg extends StatelessWidget {
     List<Widget> widgets = [
       Container(
         margin: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: CircleAvatar(child: Text(username[0]),backgroundColor: Color.fromRGBO(Random().nextInt(255),
-                              Random().nextInt(255), Random().nextInt(255),1),),
+        child: CircleAvatar(
+          child: Text(username[0]),
+          backgroundColor: Color.fromRGBO(Random().nextInt(255),
+              Random().nextInt(255), Random().nextInt(255), 1),
+        ),
       ),
       Column(
           crossAxisAlignment: userId == Authorization.getLoggedUser().id
               ? CrossAxisAlignment.end
               : CrossAxisAlignment.start,
           children: <Widget>[
-            Text(username,style: TextStyle(fontWeight: FontWeight.w800),),
+            Text(
+              username,
+              style: TextStyle(fontWeight: FontWeight.w800),
+            ),
             Container(
               alignment: Authorization.getLoggedUser().id == userId
                   ? Alignment.centerRight

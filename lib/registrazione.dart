@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:fides_calendar/authorization/authorization.dart';
+import 'package:fides_calendar/environment/environment.dart';
 import 'package:fides_calendar/screens/second_page.dart';
 import 'package:fides_calendar/util/days_month.dart';
 import 'package:flutter/cupertino.dart';
@@ -45,6 +46,13 @@ class _RegistrazioneState extends State<Registrazione> {
   String _errorsMessage = '';
   Color backgroundColor = Color.fromRGBO(235, 237, 241, 1);
   Color pinkColor = Color.fromRGBO(237, 18, 81, 1);
+  bool _obscureText = true;
+  @override
+  void _toggle() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
 
   Future<Iterable> _saveUser(Map user) async {
     Iterable errors = [];
@@ -52,7 +60,7 @@ class _RegistrazioneState extends State<Registrazione> {
     print(user);
     try {
       final response = await client.post(
-          "https://immense-anchorage-57010.herokuapp.com/api/users",
+          "${Environment.siteUrl}users",
           body: user);
 
       if (response.statusCode == 422) {
@@ -318,8 +326,19 @@ class _RegistrazioneState extends State<Registrazione> {
 
                             return null;
                           },
-                          obscureText: true,
+                          obscureText: _obscureText,
                           decoration: InputDecoration(
+                            suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _obscureText
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
+                                    color: pinkColor,
+                                  ),
+                                  onPressed: () {
+                                    _toggle();
+                                  },
+                                ),
                               focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10.0),
                                   borderSide: BorderSide(color: Colors.black)),

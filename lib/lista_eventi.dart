@@ -18,6 +18,7 @@ import 'package:fides_calendar/util/loader.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timeline_list/timeline.dart';
 import 'package:timeline_list/timeline_model.dart';
 // import 'package:camera/camera.dart';
@@ -70,7 +71,7 @@ class _ListaEventiState extends State<ListaEventi> {
   @override
   void initState() {
     _getEvents(
-        "https://immense-anchorage-57010.herokuapp.com/api/events/coming/20");
+        "${Environment.siteUrl}events/coming/20");
     super.initState();
     if (Authorization.getLoggedUser().celebrations.length < 2) {
       SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -87,57 +88,112 @@ class _ListaEventiState extends State<ListaEventi> {
     var screenWidth = MediaQuery.of(context).size.width;
     Color backgroundColor = Color.fromRGBO(235, 237, 241, 1);
     Color pinkColor = Color.fromRGBO(237, 18, 81, 1);
+    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
     if (_isLoading) {
       return Loader.getLoader(context);
     } else {
       return Scaffold(
-          bottomNavigationBar: BottomNavigationBar(
-            onTap: (index) {
-              if (index == 0) {
-                setState(() {
-                  _getEvents("${Environment.siteUrl}/events/passed");
-                });
-              } else if (index == 1) {
-                setState(() {
-                  _getEvents("${Environment.siteUrl}/events/coming/20");
-                });
-              } else {
-                Navigator.push(context, PageTransition(child: Chat()));
-              }
-            },
+          key: _scaffoldKey,
+          drawer: Drawer(
             elevation: 0,
-            backgroundColor: Color.fromRGBO(235, 237, 241, 100),
-            items: <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                  icon: Icon(
-                    Icons.list,
-                    color: Color.fromRGBO(237, 18, 81, 1),
+            child: Container(
+              color: Colors.white,
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: <Widget>[
+                  DrawerHeader(
+                    child: Image.asset('assets/images/Asset 15.png'),
+                    decoration: BoxDecoration(color: backgroundColor),
                   ),
-                  title: Text(
-                    'EVENTI PASSATI',
-                    style: TextStyle(
-                        color: Color.fromRGBO(237, 18, 81, 1), fontSize: 12),
-                  )),
-              BottomNavigationBarItem(
-                  icon: ImageIcon(
-                    AssetImage('assets/images/Asset 15.png'),
-                    color: pinkColor,
-                    size: 35,
-                  ),
-                  title: Text('HOME',
-                      style: TextStyle(color: Color.fromRGBO(237, 18, 81, 1)))),
-              BottomNavigationBarItem(
-                  icon: Icon(
-                    Icons.chat,
-                    color: Color.fromRGBO(237, 18, 81, 1),
-                  ),
-                  title: Text('CHAT',
+                  ListTile(
+                      leading: Icon(
+                        Icons.home,
+                        color: pinkColor,
+                      ),
+                      title: Text(
+                        'HOME',
+                        style: TextStyle(
+                            color: pinkColor,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w800),
+                      ),
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                            context, PageTransition(child: ListaEventi()));
+                      }),
+                  ListTile(
+                    leading: Icon(
+                      Icons.list,
+                      color: pinkColor,
+                    ),
+                    title: Text(
+                      'EVENTI PASSATI',
                       style: TextStyle(
-                          color: Color.fromRGBO(237, 18, 81, 1),
-                          fontSize: 12))),
-            ],
+                          color: pinkColor,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800),
+                    ),
+                    onTap: () {
+                      Future.delayed(
+                          Duration.zero,
+                          () => {
+                                setState(() {
+                                  _getEvents(
+                                      "${Environment.siteUrl}/events/passed");
+                                }),
+                                Navigator.pop(context)
+                              });
+                    },
+                  ),
+                  ListTile(
+                      leading: Icon(
+                        Icons.chat,
+                        color: pinkColor,
+                      ),
+                      title: Text(
+                        'CHAT',
+                        style: TextStyle(
+                            color: pinkColor,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w800),
+                      ),
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(context, PageTransition(child: Chat()));
+                      }),
+                  ListTile(
+                      leading: Icon(
+                        Icons.exit_to_app,
+                        color: pinkColor,
+                      ),
+                      title: Text(
+                        'LOGOUT',
+                        style: TextStyle(
+                            color: pinkColor,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w800),
+                      ),
+                      onTap: () {
+                        SharedPreferences.getInstance()
+                            .then((prefs) => {prefs.clear()});
+                        Authorization.logout();
+                        Navigator.pop(context);
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                            '/login', (Route<dynamic> route) => false);
+                      }),
+                ],
+              ),
+            ),
           ),
           appBar: AppBar(
+              leading: IconButton(
+                  icon: Icon(
+                    Icons.menu,
+                    color: pinkColor,
+                    size: 28,
+                  ),
+                  onPressed: () => _scaffoldKey.currentState.openDrawer()),
               actions: <Widget>[
                 GestureDetector(
                   child: Container(
@@ -182,9 +238,9 @@ class _ListaEventiState extends State<ListaEventi> {
                       decoration: BoxDecoration(
                           boxShadow: <BoxShadow>[
                             BoxShadow(
-                                offset: Offset(0, 4),
+                                offset: Offset(0, 1),
                                 color: Colors.grey,
-                                blurRadius: 1)
+                                blurRadius: 5)
                           ],
                           color: Colors.white,
                           borderRadius: BorderRadius.only(
