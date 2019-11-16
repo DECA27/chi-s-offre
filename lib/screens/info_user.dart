@@ -34,7 +34,7 @@ class _InfoUserState extends State<InfoUser> {
     });
     try {
       final response = await http.get(
-          "${Environment.siteUrl}user/${this.widget.userId}",
+          "${Environment.siteUrl}/user/${this.widget.userId}",
           headers: {
             'Accept': 'application/json',
             HttpHeaders.authorizationHeader: Authorization.token

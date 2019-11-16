@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:fides_calendar/authorization/authorization.dart';
+import 'package:fides_calendar/environment/environment.dart';
 import 'package:fides_calendar/lista_eventi.dart';
 import 'package:fides_calendar/util/loader.dart';
 import 'package:flutter/material.dart';
@@ -84,7 +85,7 @@ class _OrganizesState extends State<Organizes> {
                     http.Response response;
 
                     response = await http.put(
-                        "https://immense-anchorage-57010.herokuapp.com/api/event/${this.widget.id}/description",
+                        "${Environment.siteUrl}/event/${this.widget.id}/description",
                         headers: {
                           HttpHeaders.authorizationHeader: Authorization.token
                         },

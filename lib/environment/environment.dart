@@ -1,6 +1,6 @@
 class Environment {
   static final String siteUrl =
-      "https://immense-anchorage-57010.herokuapp.com/api";
+      "http://f-digital.online:3100/api";
   static final String chatRoom =
-      "https://immense-anchorage-57010.herokuapp.com/chat-room";
+      "http://f-digital.online:3100/chat-room";
 }

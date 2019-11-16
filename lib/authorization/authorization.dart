@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:fides_calendar/environment/environment.dart';
 import 'package:fides_calendar/models/user.dart';
 import 'package:http/http.dart' as http;
 
@@ -12,7 +12,7 @@ class Authorization {
 
   static Future<bool> login(String email, String password) async {
     http.Response response = await http.post(
-        "https://immense-anchorage-57010.herokuapp.com/api/login",
+        "${Environment.siteUrl}/login",
         body: {'email': email, 'password': password});
 
     if (response.statusCode == 200) {

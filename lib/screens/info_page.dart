@@ -53,12 +53,11 @@ class _InfoPageState extends State<InfoPage> {
     });
 
     try {
-      final response = await http.get(
-          "${Environment.siteUrl}event/${this.widget.eventId}",
-          headers: {
-            'Accept': 'application/json',
-            HttpHeaders.authorizationHeader: Authorization.token
-          });
+      final response = await http
+          .get("${Environment.siteUrl}/event/${this.widget.eventId}", headers: {
+        'Accept': 'application/json',
+        HttpHeaders.authorizationHeader: Authorization.token
+      });
       if (response.statusCode == 200) {
         _event = Event.fromJson(jsonDecode(response.body));
 

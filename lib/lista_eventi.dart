@@ -70,8 +70,7 @@ class _ListaEventiState extends State<ListaEventi> {
 
   @override
   void initState() {
-    _getEvents(
-        "${Environment.siteUrl}events/coming/20");
+    _getEvents("${Environment.siteUrl}/events/coming/20");
     super.initState();
     if (Authorization.getLoggedUser().celebrations.length < 2) {
       SchedulerBinding.instance.addPostFrameCallback((_) {

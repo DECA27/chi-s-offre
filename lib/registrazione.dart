@@ -60,7 +60,7 @@ class _RegistrazioneState extends State<Registrazione> {
     print(user);
     try {
       final response = await client.post(
-          "${Environment.siteUrl}users",
+          "${Environment.siteUrl}/users",
           body: user);
 
       if (response.statusCode == 422) {
@@ -165,6 +165,7 @@ class _RegistrazioneState extends State<Registrazione> {
                               horizontal: screenWidth / 100 * 5,
                               vertical: screenHeigth / 100 * 2),
                           hintText: "Nome",
+                          hintStyle: TextStyle(color: pinkColor),
                           errorText: 'Inserisci il tuo nome',
                           errorStyle: TextStyle(color: pinkColor),
                           errorBorder: OutlineInputBorder(
@@ -203,6 +204,7 @@ class _RegistrazioneState extends State<Registrazione> {
                                   vertical: screenHeigth / 100 * 2),
                               hintText: "Cognome",
                               errorText: 'Inserisci il tuo cognome',
+                              hintStyle: TextStyle(color: pinkColor),
                               errorStyle: TextStyle(color: pinkColor),
                               errorBorder: OutlineInputBorder(
                                   borderSide: BorderSide(color: pinkColor)),
@@ -295,6 +297,7 @@ class _RegistrazioneState extends State<Registrazione> {
                                   horizontal: screenWidth / 100 * 5,
                                   vertical: screenHeigth / 100 * 2),
                               hintText: "Email",
+                              hintStyle: TextStyle(color: pinkColor),
                               errorText: 'Inserisci una email',
                               errorStyle: TextStyle(color: pinkColor),
                               errorBorder: OutlineInputBorder(
@@ -346,6 +349,7 @@ class _RegistrazioneState extends State<Registrazione> {
                                   horizontal: screenWidth / 100 * 5,
                                   vertical: screenHeigth / 100 * 2),
                               hintText: "Password",
+                              hintStyle: TextStyle(color: pinkColor),
                               errorText: 'Inserisci una password',
                               errorStyle: TextStyle(color: pinkColor),
                               errorBorder: OutlineInputBorder(
